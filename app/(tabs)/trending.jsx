@@ -1,110 +1,143 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+// TrendingTokensScreen.tsx
+import { Colors } from '@/constants/Colors';
+import { ScrollView, StyleSheet, Text, TouchableOpacity, useColorScheme, View } from 'react-native';
 
-import { Collapsible } from '@/components/Collapsible';
-import { ExternalLink } from '@/components/ExternalLink';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
-import { IconSymbol } from '@/components/ui/IconSymbol';
+export default function TrendingTokensScreen() {
+    const theme = useColorScheme() ?? 'light';
+    const color = Colors[theme];
 
-export default function TabTwoScreen() {
+    const renderRow = (key) => (
+        <View style={styles.row} key={key}>
+            <View style={styles.colLeft}>
+                <Text style={[styles.symbol, { color: color.text }]}>BTCUSDT</Text>
+                <Text style={styles.volume}>19,40B USDT</Text>
+            </View>
+
+            <Text style={[styles.price, { color: color.text }]}>109.430,8</Text>
+
+            <View style={styles.colRight}>
+                <Text style={styles.percent}>+1,5%</Text>
+            </View>
+        </View>
+    );
+
     return (
-        <ParallaxScrollView
-            headerBackgroundColor={{ light: '#D0D0D0', dark: '#353636' }}
-            headerImage={
-                <IconSymbol
-                    size={310}
-                    color="#808080"
-                    name="chevron.left.forwardslash.chevron.right"
-                    style={styles.headerImage}
-                />
-            }>
-            <ThemedView style={styles.titleContainer}>
-                <ThemedText type="title">Explore</ThemedText>
-            </ThemedView>
-            <ThemedText>This app includes example code to help you get started.</ThemedText>
-            <Collapsible title="File-based routing">
-                <ThemedText>
-                    This app has two screens:{' '}
-                    <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> and{' '}
-                    <ThemedText type="defaultSemiBold">app/(tabs)/explore.tsx</ThemedText>
-                </ThemedText>
-                <ThemedText>
-                    The layout file in <ThemedText type="defaultSemiBold">app/(tabs)/_layout.tsx</ThemedText>{' '}
-                    sets up the tab navigator.
-                </ThemedText>
-                <ExternalLink href="https://docs.expo.dev/router/introduction">
-                    <ThemedText type="link">Learn more</ThemedText>
-                </ExternalLink>
-            </Collapsible>
-            <Collapsible title="Android, iOS, and web support">
-                <ThemedText>
-                    You can open this project on Android, iOS, and the web. To open the web version, press{' '}
-                    <ThemedText type="defaultSemiBold">w</ThemedText> in the terminal running this project.
-                </ThemedText>
-            </Collapsible>
-            <Collapsible title="Images">
-                <ThemedText>
-                    For static images, you can use the <ThemedText type="defaultSemiBold">@2x</ThemedText> and{' '}
-                    <ThemedText type="defaultSemiBold">@3x</ThemedText> suffixes to provide files for
-                    different screen densities
-                </ThemedText>
-                <Image source={require('@/assets/images/react-logo.png')} style={{ alignSelf: 'center' }} />
-                <ExternalLink href="https://reactnative.dev/docs/images">
-                    <ThemedText type="link">Learn more</ThemedText>
-                </ExternalLink>
-            </Collapsible>
-            <Collapsible title="Custom fonts">
-                <ThemedText>
-                    Open <ThemedText type="defaultSemiBold">app/_layout.tsx</ThemedText> to see how to load{' '}
-                    <ThemedText style={{ fontFamily: 'SpaceMono' }}>
-                        custom fonts such as this one.
-                    </ThemedText>
-                </ThemedText>
-                <ExternalLink href="https://docs.expo.dev/versions/latest/sdk/font">
-                    <ThemedText type="link">Learn more</ThemedText>
-                </ExternalLink>
-            </Collapsible>
-            <Collapsible title="Light and dark mode components">
-                <ThemedText>
-                    This template has light and dark mode support. The{' '}
-                    <ThemedText type="defaultSemiBold">useColorScheme()</ThemedText> hook lets you inspect
-                    what the user&apos;s current color scheme is, and so you can adjust UI colors accordingly.
-                </ThemedText>
-                <ExternalLink href="https://docs.expo.dev/develop/user-interface/color-themes/">
-                    <ThemedText type="link">Learn more</ThemedText>
-                </ExternalLink>
-            </Collapsible>
-            <Collapsible title="Animations">
-                <ThemedText>
-                    This template includes an example of an animated component. The{' '}
-                    <ThemedText type="defaultSemiBold">components/HelloWave.tsx</ThemedText> component uses
-                    the powerful <ThemedText type="defaultSemiBold">react-native-reanimated</ThemedText>{' '}
-                    library to create a waving hand animation.
-                </ThemedText>
-                {Platform.select({
-                    ios: (
-                        <ThemedText>
-                            The <ThemedText type="defaultSemiBold">components/ParallaxScrollView.tsx</ThemedText>{' '}
-                            component provides a parallax effect for the header image.
-                        </ThemedText>
-                    ),
-                })}
-            </Collapsible>
-        </ParallaxScrollView>
+        <ScrollView style={[styles.container, { backgroundColor: color.background }]}>
+            <View style={styles.header}>
+                <TouchableOpacity style={styles.dropdown}><Text style={styles.dropdownText}>Choose Timeframe ▼</Text></TouchableOpacity>
+                <TouchableOpacity style={styles.dropdown}><Text style={styles.dropdownText}>Choose Network ▼</Text></TouchableOpacity>
+            </View>
+
+            <View style={styles.tabRow}>
+                <Text style={[styles.tab, styles.activeTab]}>Danh sách yêu thích</Text>
+                <Text style={styles.tab}>Thị trường</Text>
+                <Text style={styles.tab}>Dữ liệu</Text>
+            </View>
+
+            <View style={styles.categoryRow}>
+                <Text style={styles.catText}>Tất cả</Text>
+                <Text style={styles.catText}>Tài sản</Text>
+                <Text style={styles.catText}>Earn</Text>
+                <Text style={styles.catText}>Giao ngay</Text>
+            </View>
+
+            <View style={styles.tableHeader}>
+                <Text style={styles.headerText}>Tên/Volume</Text>
+                <Text style={styles.headerText}>Giá gần nhất</Text>
+                <Text style={styles.headerText}>24h</Text>
+            </View>
+
+            {Array.from({ length: 10 }).map((_, i) => renderRow(i))}
+        </ScrollView>
     );
 }
 
 const styles = StyleSheet.create({
-    headerImage: {
-        color: '#808080',
-        bottom: -90,
-        left: -35,
-        position: 'absolute',
+    container: {
+        flex: 1,
+        padding: 16,
     },
-    titleContainer: {
+    header: {
         flexDirection: 'row',
-        gap: 8,
+        justifyContent: 'space-between',
+        marginBottom: 12,
+    },
+    dropdown: {
+        backgroundColor: '#E2E8F0',
+        paddingHorizontal: 12,
+        paddingVertical: 6,
+        borderRadius: 6,
+    },
+    dropdownText: {
+        fontSize: 13,
+        color: '#1E293B',
+    },
+    tabRow: {
+        flexDirection: 'row',
+        marginBottom: 8,
+        gap: 12,
+    },
+    tab: {
+        fontSize: 14,
+        color: '#64748B',
+    },
+    activeTab: {
+        fontWeight: 'bold',
+        textDecorationLine: 'underline',
+        color: '#1D4ED8',
+    },
+    categoryRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginBottom: 8,
+    },
+    catText: {
+        fontSize: 12,
+        color: '#475569',
+    },
+    tableHeader: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginBottom: 6,
+    },
+    headerText: {
+        fontSize: 12,
+        color: '#3B82F6',
+    },
+    row: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingVertical: 10,
+        borderBottomWidth: 1,
+        borderBottomColor: '#E5E7EB',
+    },
+    colLeft: {
+        flex: 1,
+    },
+    symbol: {
+        fontSize: 14,
+        fontWeight: 'bold',
+    },
+    volume: {
+        fontSize: 12,
+        color: '#94A3B8',
+    },
+    price: {
+        flex: 1,
+        textAlign: 'center',
+        fontSize: 14,
+    },
+    colRight: {
+        flex: 1,
+        alignItems: 'flex-end',
+    },
+    percent: {
+        backgroundColor: '#E2E8F0',
+        paddingHorizontal: 8,
+        paddingVertical: 4,
+        borderRadius: 4,
+        color: '#1E293B',
+        fontWeight: '500',
     },
 });
