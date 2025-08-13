@@ -1,6 +1,6 @@
-import { Redirect, Tabs } from 'expo-router';
+import { Tabs } from 'expo-router';
 import React from 'react';
-import { ActivityIndicator, View } from 'react-native';
+import { View } from 'react-native';
 import {
   Compass,
   DollarSign,
@@ -9,27 +9,7 @@ import {
   TrendingUp,
 } from 'react-native-feather';
 
-import { useAppInit } from '@/hooks';
-import { useColorScheme } from '@/hooks/useColorScheme';
-import { useAuthStore } from '@/store/auth';
-
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
-  const isReady = useAppInit();
-  const isLoggedIn = useAuthStore((s) => s.isLoggedIn);
-
-  if (!isReady) {
-    return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <ActivityIndicator size="large" />
-      </View>
-    );
-  }
-
-  if (!isLoggedIn) {
-    return <Redirect href="/(auth)/login" />;
-  }
-
   return (
     <Tabs
       screenOptions={({ route }) => ({
@@ -73,11 +53,11 @@ export default function TabLayout() {
         },
       })}
     >
-      <Tabs.Screen name="index" options={{ title: 'Trang chủ' }} />
-      <Tabs.Screen name="trending" options={{ title: 'Thịnh hành' }} />
-      <Tabs.Screen name="swap" options={{ title: 'Hoán đổi' }} />
-      <Tabs.Screen name="explore" options={{ title: 'Khám phá' }} />
-      <Tabs.Screen name="earn" options={{ title: 'Earn' }} />
+      <Tabs.Screen name="index" options={{ title: 'Trang chủ', headerShown: false }} />
+      <Tabs.Screen name="trending" options={{ title: 'Thịnh hành', headerShown: false }} />
+      <Tabs.Screen name="swap" options={{ title: 'Hoán đổi', headerShown: false }} />
+      <Tabs.Screen name="explore" options={{ title: 'Khám phá', headerShown: false }} />
+      <Tabs.Screen name="earn" options={{ title: 'Earn', headerShown: false }} />
     </Tabs>
   );
 }

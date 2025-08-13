@@ -1,6 +1,8 @@
+import { Wallets } from '@/components/wallet';
 import { Colors } from '@/constants/Colors';
 import { Ionicons } from '@expo/vector-icons';
-import React from 'react';
+import { Link } from 'expo-router';
+import React, { useState } from 'react';
 import {
   Image,
   ScrollView,
@@ -8,7 +10,7 @@ import {
   Text,
   TouchableOpacity,
   useColorScheme,
-  View,
+  View
 } from 'react-native';
 
 const actionItem = (icon: any, label: string) => (
@@ -74,14 +76,17 @@ const tokenItems = [
 export default function HomePage() {
   const colorScheme = useColorScheme() ?? 'light';
   const theme = Colors[colorScheme];
+  const [isOpenModalWallet, setIsOpenModalWallet] = useState(false);
 
   return (
     <ScrollView style={[styles.container, { backgroundColor: theme.background }]}>
-      {/* Header */}
+      <Wallets visible={isOpenModalWallet} onClose={() => setIsOpenModalWallet(false)} />
       <View style={styles.header}>
         <Ionicons name="qr-code-outline" size={22} color={theme.icon} />
-        <Text style={[styles.title, { color: theme.text }]}>Crypto Wallet ▼</Text>
-        <Ionicons name="person-outline" size={22} color={theme.icon} />
+        <Text style={[styles.title, { color: theme.text }]} onPress={() => setIsOpenModalWallet(true)}>Crypto Wallet ▼</Text>
+        <Link href={'/account' as any}>
+          <Ionicons name="person-outline" size={22} color={theme.icon} />
+        </Link>
       </View>
 
       {/* Balance */}
