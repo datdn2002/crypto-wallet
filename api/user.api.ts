@@ -14,3 +14,10 @@ export async function loginApi(data: LoginPayload) {
 		data: JSON.stringify(data),
 	});
 }
+
+export async function getMeApi(token: string) {
+	return await axiosClient("user/me", {
+		method: "GET",
+		token,
+	});
+}

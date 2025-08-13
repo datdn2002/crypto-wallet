@@ -1,11 +1,14 @@
-// app/wallets.page.tsx (hoặc bất kỳ nơi nào bạn gọi)
-import React from "react";
+import { getAllWalletsApi } from "@/api";
+import { useAuthStore } from "@/store/auth";
+import { createNewWallet, getWalletIdsOnDevice } from "@/utils";
+import React, { useEffect, useState } from "react";
 import { FlatList, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { MaxModal } from "../theme";
+import { CreateWalletModal } from "../theme/ThemedModal";
 
 type Wallet = {
   id: string;
-  name: string;
+  wallet_name: string;
   isDefault?: boolean;
 };
 
@@ -14,23 +17,53 @@ type Props = {
   onClose: () => void;
 };
 
-const walletsMock: Wallet[] = [
-  { id: "1", name: "Ví chính", isDefault: true },
-  { id: "2", name: "Ví chính 1" },
-];
-
 export function Wallets({ visible, onClose }: Props) {
+  const [wallets, setWallets] = useState<Wallet[]>([]);
+  const [refetch, setRefetch] = useState(0);
+  const { access_token, userData } = useAuthStore();
+  const [showCreateWalletModal, setShowCreateWalletModal] = useState(false);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (!access_token || !userData) return;
+      const getWalletsRes = await getAllWalletsApi(access_token);
+      if (getWalletsRes.code == 200) {
+        const wallets: Wallet[] = getWalletsRes.data?.data;
+        if (wallets.length == 0) {
+          const newWallet = await createNewWallet(userData.id, access_token);
+          if (newWallet) {
+            fetchData();
+          }
+        } else {
+          const walletIdsOnDevice = await getWalletIdsOnDevice();
+          setWallets(wallets.filter(w => walletIdsOnDevice.includes(w.id)));
+        }
+      }
+    }
+    fetchData();
+  }, [refetch]);
+
+  const handleAddWallet = async () => {
+    if (!access_token || !userData) return;
+    const newWallet = await createNewWallet(userData.id, access_token);
+    if (newWallet) {
+      setRefetch(prev => prev + 1);
+      setShowCreateWalletModal(false);
+    } else {
+      console.error("Failed to create wallet");
+    }
+  }
+
   return (
     <MaxModal visible={visible} onClose={onClose} label="Ví">
-
       <Text style={styles.sectionTitle}>Ví đa tiền mã hóa</Text>
 
       <FlatList
-        data={walletsMock}
+        data={wallets}
         keyExtractor={(w) => w.id}
         contentContainerStyle={{ paddingBottom: 120 }}
         ItemSeparatorComponent={() => <View style={{ height: 14 }} />}
-        renderItem={({ item }) => (
+        renderItem={({ item, index }) => (
           <View style={styles.card}>
             <View style={{ flexDirection: "row", gap: 12, flex: 1 }}>
               {/* Avatar + badge */}
@@ -40,7 +73,7 @@ export function Wallets({ visible, onClose }: Props) {
               </View>
 
               <View style={{ flex: 1 }}>
-                <Text style={styles.cardTitle}>{item.name}</Text>
+                <Text style={styles.cardTitle}>{item.wallet_name || "Ví " + (index ? index + 1 : "")}</Text>
                 <Text style={styles.cardSub}>Ví đa tiền mã hóa</Text>
                 <View style={{ marginTop: 8 }}>
                   <TouchableOpacity onPress={() => { /* TODO: backup thủ công */ }}>
@@ -62,10 +95,16 @@ export function Wallets({ visible, onClose }: Props) {
 
       {/* Nút Thêm ví */}
       <View style={styles.addWrap}>
-        <TouchableOpacity style={styles.addBtn} onPress={() => { /* TODO: thêm ví */ }}>
+        <TouchableOpacity style={styles.addBtn} onPress={() => setShowCreateWalletModal(true)}>
           <Text style={styles.addText}>Thêm ví</Text>
         </TouchableOpacity>
       </View>
+      <CreateWalletModal
+        visible={showCreateWalletModal}
+        onClose={() => setShowCreateWalletModal(false)}
+        onCreateNew={handleAddWallet}
+        onAddExisting={() => { /* TODO: handle add existing wallet */ }}
+      />
     </MaxModal>
   );
 }

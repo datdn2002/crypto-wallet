@@ -6,13 +6,13 @@ export async function authenticateBiometric(): Promise<boolean> {
     const types = await LocalAuthentication.supportedAuthenticationTypesAsync();
 
     if (!hasHardware || !isEnrolled) {
-        console.warn('Thiết bị không hỗ trợ sinh trắc học');
-        return false;
+        console.log('Thiết bị không hỗ trợ sinh trắc học');
+        return true;
     }
 
     if (!types.includes(LocalAuthentication.AuthenticationType.FACIAL_RECOGNITION)) {
-        console.warn('Thiết bị không hỗ trợ Face ID');
-        return false;
+        console.log('Thiết bị không hỗ trợ Face ID');
+        return true;
     }
 
     const result = await LocalAuthentication.authenticateAsync({

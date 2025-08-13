@@ -38,7 +38,6 @@ export default function CreatePasswordScreen() {
 			user_name: registrationData?.email,
 			phone_number: "0986172791",
 		});
-		console.log({ success });
 		if (success) {
 			router.push("/(auth)/login");
 		} else {

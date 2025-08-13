@@ -1,17 +1,28 @@
-import { createUser, CreateUserPayload, loginApi, LoginPayload } from "@/api";
-import * as SecureStore from "expo-secure-store";
-import { Platform } from "react-native";
+import { createUser, CreateUserPayload, getMeApi, loginApi, LoginPayload } from "@/api";
+import { DeviceStore } from "@/utils";
 import { create } from "zustand";
 import { authenticateBiometric } from "./biometric-auth";
 
 type AuthState = {
 	isLoggedIn: boolean;
-	token: string | null;
+	access_token: string | null;
+	refresh_token: string | null;
 	isRehydrated: boolean;
 	isAuthenticate: boolean;
 	registrationData?: { email?: string; password?: string; error?: string };
+	userData?: {
+		id: string;
+		email: string;
+		user_name: string;
+		phone_number: string;
+		kyc_status: string;
+		kyc_level: string;
+		created_at: string;
+		updated_at: string;
+		last_login_at: string;
+	};
 
-	login: (data: LoginPayload) => Promise<void>;
+	login: (data: LoginPayload) => Promise<boolean>;
 	logout: () => Promise<void>;
 	rehydrate: () => Promise<void>;
 	verifyEmail: (email: string) => Promise<void>;
@@ -20,53 +31,49 @@ type AuthState = {
 
 export const useAuthStore = create<AuthState>((set) => ({
 	isLoggedIn: false,
-	token: null,
+	access_token: null,
+	refresh_token: null,
 	isRehydrated: false,
 	isAuthenticate: false,
 
 	login: async (data: LoginPayload) => {
 		const res = (await loginApi(data)) as any;
-		console.log(res);
-		if (res.success) {
-			const token = res.token ?? "";
-			if (Platform.OS === "web") {
-				localStorage.setItem("user_token", token);
-			} else await SecureStore.setItemAsync("user_token", token);
-			set({ token, isLoggedIn: true });
+		if (res?.data?.access_token) {
+			const access_token = res.data.access_token ?? "";
+			const refresh_token = res.data.refresh_token ?? "";
+			await DeviceStore.setItem("access_token", access_token);
+			await DeviceStore.setItem("refresh_token", refresh_token);
+			set({ access_token, isLoggedIn: true, refresh_token, userData: res.data?.user });
+			return true;
 		}
+		return false;
 	},
 
 	logout: async () => {
-		if (Platform.OS === "web") {
-			console.warn("SecureStore is not available on web");
-		} else await SecureStore.deleteItemAsync("user_token");
-		set({ token: null, isLoggedIn: false });
+		await DeviceStore.deleteItem("access_token");
+		await DeviceStore.deleteItem("refresh_token");
+		set({ access_token: null, isLoggedIn: false, refresh_token: null });
 	},
 
 	rehydrate: async () => {
-		if (Platform.OS === "web") {
-			const token = localStorage.getItem("user_token");
-			set({
-				isLoggedIn: !!token,
-				isRehydrated: true,
-				isAuthenticate: true,
-			});
+		const access_token = await DeviceStore.getItem("access_token");
+		const refresh_token = await DeviceStore.getItem("refresh_token");
+		const ok = await authenticateBiometric();
+		if (access_token) {
+			const getUserDataRes = await getMeApi(access_token);
+			if (getUserDataRes.data?.id) {
+				set({
+					isLoggedIn: true,
+					isRehydrated: true,
+					isAuthenticate: ok,
+					access_token,
+					refresh_token,
+					userData: getUserDataRes.data,
+				})
+			} else set({ isLoggedIn: false, isAuthenticate: ok, isRehydrated: true });
 			return;
 		}
-
-		try {
-			const token = await SecureStore.getItemAsync("user_token");
-			const ok = await authenticateBiometric();
-			set({
-				token,
-				isLoggedIn: !!token,
-				isRehydrated: true,
-				isAuthenticate: !!ok,
-			});
-		} catch (error) {
-			console.error("Rehydrate error:", error);
-			set({ isRehydrated: true });
-		}
+		set({ isLoggedIn: false, isAuthenticate: ok, isRehydrated: true });
 	},
 
 	verifyEmail: async (email: string) => {

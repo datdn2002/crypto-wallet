@@ -1,5 +1,14 @@
 import axios, { AxiosResponse } from "axios";
 
+declare module "axios" {
+	export interface AxiosRequestConfig {
+		token?: string; // thêm field tùy biến
+	}
+	export interface AxiosResponse {
+		code: number;
+	}
+}
+
 // Tạo instance axios
 const axiosClient = axios.create({
 	baseURL: process.env.EXPO_PUBLIC_API_URL,

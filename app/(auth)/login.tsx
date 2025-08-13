@@ -1,7 +1,7 @@
 import { useAuthStore } from "@/store/auth";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { router } from "expo-router";
-import React from "react";
+import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Alert, Pressable, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import * as Yup from "yup";
@@ -26,22 +26,23 @@ export default function LoginScreen() {
 		resolver: yupResolver(schema),
 	});
 	const { login } = useAuthStore();
+	const [error, setError] = useState('');
 
 	const onSubmit = async (data: LoginForm) => {
 		try {
-			login(data);
-			if (data.email === "admin@admin.com" && data.password === "123456") {
-				Alert.alert("Đăng nhập thành công", JSON.stringify(data));
+			const success = await login(data);
+			if (!success) {
+				setError("Email hoặc mật khẩu không đúng!")
 			}
 		} catch (err) {
 			Alert.alert("Lỗi", "Đăng nhập thất bại");
+			setError("Email hoặc mật khẩu không đúng!")
 		}
 	};
 
 	return (
 		<View style={styles.container}>
 			<Text style={styles.title}>Đăng Nhập</Text>
-
 			{/* Email */}
 			<Controller
 				control={control}
@@ -51,7 +52,10 @@ export default function LoginScreen() {
 						style={styles.input}
 						placeholder="Email"
 						value={value}
-						onChangeText={onChange}
+						onChangeText={(val) => {
+							onChange(val);
+							setError("");
+						}}
 						keyboardType="email-address"
 						autoCapitalize="none"
 					/>
@@ -68,13 +72,17 @@ export default function LoginScreen() {
 						style={styles.input}
 						placeholder="Mật khẩu"
 						value={value}
-						onChangeText={onChange}
+						onChangeText={(val) => {
+							onChange(val);
+							setError("");
+						}}
 						secureTextEntry
 					/>
 				)}
 			/>
 			{errors.password && <Text style={styles.error}>{errors.password.message}</Text>}
 
+			{error && <Text style={[styles.error, { textAlign: 'center' }]}>{error}</Text>}
 			<TouchableOpacity style={styles.button} onPress={handleSubmit(onSubmit)} disabled={isSubmitting}>
 				<Text style={styles.buttonText}>{isSubmitting ? "Đang xử lý..." : "Đăng Nhập"}</Text>
 			</TouchableOpacity>
@@ -86,9 +94,9 @@ export default function LoginScreen() {
 			</View>
 
 			<View style={styles.row}>
-				<Text style={styles.text}>Don’t have an account? </Text>
+				<Text style={styles.text}>Bạn chưa có tài khoản? </Text>
 				<Pressable onPress={() => router.replace("/(auth)/(registration-steps)/register")}>
-					<Text style={styles.link}>Register</Text>
+					<Text style={styles.link}>Đăng ký</Text>
 				</Pressable>
 			</View>
 		</View>
@@ -107,6 +115,7 @@ const styles = StyleSheet.create({
 		justifyContent: "center",
 		paddingHorizontal: 20,
 		backgroundColor: "#fff",
+		paddingBottom: "40%"
 	},
 	title: {
 		fontSize: 26,

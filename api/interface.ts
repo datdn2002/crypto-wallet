@@ -11,3 +11,8 @@ export interface LoginPayload {
 	user_name?: string;
 	phone_number?: string;
 }
+
+export interface CreateWalletPayload {
+	userId: string;
+	address: string;
+}
