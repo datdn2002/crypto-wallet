@@ -81,12 +81,12 @@ export const MaxModal: React.FC<Props> = ({ visible, onClose, children, label })
 						</TouchableOpacity>
 
 						{/* Tiêu đề */}
-						<Text style={styles.headerTitle}>Ví</Text>
+						<Text style={styles.headerTitle}>{label}</Text>
 
 						{/* Icon bên phải */}
-						<View style={styles.rightIcons}>
+						<View style={[styles.rightIcons]}>
 							<TouchableOpacity hitSlop={10} style={styles.iconBtn}>
-								<Ionicons name="settings-outline" size={20} color="#cfcfcf" />
+								<Ionicons name="settings-outline" size={20} color="black" />
 							</TouchableOpacity>
 						</View>
 					</View>

@@ -4,7 +4,7 @@ import { createNewWallet, getWalletIdsOnDevice } from "@/utils";
 import React, { useEffect, useState } from "react";
 import { FlatList, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { MaxModal } from "../theme";
-import { CreateWalletModal } from "../theme/ThemedModal";
+import { CreateWalletModal } from "./CreateWalletModal";
 
 type Wallet = {
   id: string;
@@ -54,6 +54,10 @@ export function Wallets({ visible, onClose }: Props) {
     }
   }
 
+  const handleManualBackup = () => {
+
+  }
+
   return (
     <MaxModal visible={visible} onClose={onClose} label="Ví">
       <Text style={styles.sectionTitle}>Ví đa tiền mã hóa</Text>
@@ -76,7 +80,7 @@ export function Wallets({ visible, onClose }: Props) {
                 <Text style={styles.cardTitle}>{item.wallet_name || "Ví " + (index ? index + 1 : "")}</Text>
                 <Text style={styles.cardSub}>Ví đa tiền mã hóa</Text>
                 <View style={{ marginTop: 8 }}>
-                  <TouchableOpacity onPress={() => { /* TODO: backup thủ công */ }}>
+                  <TouchableOpacity onPress={handleManualBackup}>
                     <Text style={styles.link}>Sao lưu thủ công</Text>
                   </TouchableOpacity>
                   <TouchableOpacity onPress={() => { /* TODO: backup iCloud */ }}>
@@ -86,9 +90,9 @@ export function Wallets({ visible, onClose }: Props) {
               </View>
             </View>
 
-            <TouchableOpacity onPress={() => { /* TODO: open menu */ }} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
+            {/* <TouchableOpacity hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
               <Text style={styles.kebab}>⋮</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
         )}
       />

@@ -1,5 +1,7 @@
 export * from './AppHeader';
 export * from './MaxModal';
 export * from './ThemedButton';
+export * from './ThemedModal';
 export * from './ThemedText';
 export * from './ThemedView';
+

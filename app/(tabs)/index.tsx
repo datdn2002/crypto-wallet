@@ -1,10 +1,11 @@
 import { Wallets } from '@/components/wallet';
 import { Colors } from '@/constants/Colors';
 import { Ionicons } from '@expo/vector-icons';
-import { Link } from 'expo-router';
+import { Link, router } from 'expo-router';
 import React, { useState } from 'react';
 import {
   Image,
+  Pressable,
   ScrollView,
   StyleSheet,
   Text,
@@ -82,10 +83,13 @@ export default function HomePage() {
     <ScrollView style={[styles.container, { backgroundColor: theme.background }]}>
       <Wallets visible={isOpenModalWallet} onClose={() => setIsOpenModalWallet(false)} />
       <View style={styles.header}>
-        <Ionicons name="qr-code-outline" size={22} color={theme.icon} />
+        <Pressable onPress={() => router.push('/(scan)/qr')}>
+
+          <Ionicons name="qr-code-outline" size={22} color={theme.icon} />
+        </Pressable>
         <Text style={[styles.title, { color: theme.text }]} onPress={() => setIsOpenModalWallet(true)}>Crypto Wallet ▼</Text>
         <Link href={'/account' as any}>
-          <Ionicons name="person-outline" size={22} color={theme.icon} />
+          <Ionicons name="search-outline" size={22} color={theme.icon} />
         </Link>
       </View>
 

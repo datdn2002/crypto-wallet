@@ -2,11 +2,10 @@ import { Tabs } from 'expo-router';
 import React from 'react';
 import { View } from 'react-native';
 import {
-  Compass,
-  DollarSign,
   Home,
   Repeat,
-  TrendingUp,
+  Settings,
+  TrendingUp
 } from 'react-native-feather';
 
 export default function TabLayout() {
@@ -30,8 +29,8 @@ export default function TabLayout() {
             index: <Home color={color} />,
             trending: <TrendingUp color={color} />,
             swap: <Repeat color={color} />,
-            explore: <Compass color={color} />,
-            earn: <DollarSign color={color} />,
+            settings: <Settings color={color} />,
+            // earn: <DollarSign color={color} />,
           };
 
           return (
@@ -40,9 +39,9 @@ export default function TabLayout() {
               {focused && (
                 <View
                   style={{
-                    height: 4,
+                    height: 2,
                     width: '100%',
-                    backgroundColor: 'black',
+                    backgroundColor: color,
                     marginTop: 4,
                     borderRadius: 2,
                   }}
@@ -56,8 +55,9 @@ export default function TabLayout() {
       <Tabs.Screen name="index" options={{ title: 'Trang chủ', headerShown: false }} />
       <Tabs.Screen name="trending" options={{ title: 'Thịnh hành', headerShown: false }} />
       <Tabs.Screen name="swap" options={{ title: 'Hoán đổi', headerShown: false }} />
-      <Tabs.Screen name="explore" options={{ title: 'Khám phá', headerShown: false }} />
-      <Tabs.Screen name="earn" options={{ title: 'Earn', headerShown: false }} />
+      <Tabs.Screen name="settings" options={{ title: 'Cài đặt', headerShown: false }} />
+      {/* <Tabs.Screen name="explore" options={{ title: 'Khám phá', headerShown: false }} />
+      <Tabs.Screen name="earn" options={{ title: 'Earn', headerShown: false }} /> */}
     </Tabs>
   );
 }
