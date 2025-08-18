@@ -1,4 +1,5 @@
 // components/FullscreenModal.tsx
+import { useThemeColor } from '@/hooks/useThemeColor';
 import { Ionicons } from '@expo/vector-icons';
 import React, { useRef } from 'react';
 import {
@@ -12,7 +13,7 @@ import {
 	View,
 } from 'react-native';
 
-const height = Dimensions.get('window').height - 20;
+const height = Dimensions.get('window').height - 56;
 
 interface Props {
 	visible: boolean;
@@ -22,6 +23,9 @@ interface Props {
 }
 
 export const MaxModal: React.FC<Props> = ({ visible, onClose, children, label }) => {
+	const text = useThemeColor({}, "text");
+	const bg = useThemeColor({}, "background");
+
 	const panY = useRef(new Animated.Value(height)).current;
 
 	const resetPosition = Animated.timing(panY, {
@@ -74,14 +78,14 @@ export const MaxModal: React.FC<Props> = ({ visible, onClose, children, label })
 					style={[styles.modal, { transform: [{ translateY: panY }] }]}
 					{...panResponder.panHandlers}
 				>
-					<View style={styles.header}>
+					<View style={[styles.header, { backgroundColor: bg }]}>
 						{/* Nút đóng */}
 						<TouchableOpacity onPress={onClose} hitSlop={10} style={styles.iconBtn}>
-							<Ionicons name="close" size={22} color="#e6e6e6" />
+							<Ionicons name="close" size={22} color={text} />
 						</TouchableOpacity>
 
 						{/* Tiêu đề */}
-						<Text style={styles.headerTitle}>{label}</Text>
+						<Text style={[styles.headerTitle, { color: text }]}>{label}</Text>
 
 						{/* Icon bên phải */}
 						<View style={[styles.rightIcons]}>
@@ -100,7 +104,7 @@ export const MaxModal: React.FC<Props> = ({ visible, onClose, children, label })
 const styles = StyleSheet.create({
 	backdrop: {
 		flex: 1,
-		backgroundColor: '#000000',
+		backgroundColor: 'rgba(0,0,0,0.4)',
 		justifyContent: 'flex-end',
 	},
 	overlay: {

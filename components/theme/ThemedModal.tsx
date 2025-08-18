@@ -32,16 +32,18 @@ export function ThemedModal({
       transparent
       onRequestClose={onClose}
     >
-      <View style={styles.overlay}>
-        <View style={[styles.modalContainer, { height: height * heightPercent }]}>
-          {showCloseButton && (
-            <Pressable style={styles.closeBtn} onPress={onClose}>
-              <Text style={styles.closeText}>✕</Text>
-            </Pressable>
-          )}
-          {children}
-        </View>
-      </View>
+      <Pressable style={styles.overlay} onPress={onClose}>
+        <Pressable onPress={() => { }}>
+          <View style={[styles.modalContainer, { height: height * heightPercent }]}>
+            {showCloseButton && (
+              <Pressable style={styles.closeBtn} onPress={onClose}>
+                <Text style={styles.closeText}>✕</Text>
+              </Pressable>
+            )}
+            {children}
+          </View>
+        </Pressable>
+      </Pressable>
     </Modal>
   );
 }
@@ -67,5 +69,6 @@ const styles = StyleSheet.create({
   },
   closeText: {
     fontSize: 20,
+    padding: 8,
   },
 });

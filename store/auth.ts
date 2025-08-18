@@ -24,12 +24,12 @@ type AuthState = {
 
 	login: (data: LoginPayload) => Promise<boolean>;
 	logout: () => Promise<void>;
-	rehydrate: () => Promise<void>;
+	rehydrate: (refresh?: boolean) => Promise<void>;
 	verifyEmail: (email: string) => Promise<void>;
 	register: (data: CreateUserPayload) => Promise<boolean>;
 };
 
-export const useAuthStore = create<AuthState>((set) => ({
+export const useAuthStore = create<AuthState>((set, _this) => ({
 	isLoggedIn: false,
 	access_token: null,
 	refresh_token: null,
@@ -55,10 +55,15 @@ export const useAuthStore = create<AuthState>((set) => ({
 		set({ access_token: null, isLoggedIn: false, refresh_token: null });
 	},
 
-	rehydrate: async () => {
+	rehydrate: async (refresh = false) => {
 		const access_token = await DeviceStore.getItem("access_token");
 		const refresh_token = await DeviceStore.getItem("refresh_token");
-		const ok = await authenticateBiometric();
+		let ok = refresh ? false : _this().isAuthenticate;
+		if (!ok) ok = await authenticateBiometric();
+		if (!ok) {
+			set({ isLoggedIn: false, isAuthenticate: false, isRehydrated: true });
+			return;
+		}
 		if (access_token) {
 			const getUserDataRes = await getMeApi(access_token);
 			if (getUserDataRes.data?.id) {
@@ -69,11 +74,27 @@ export const useAuthStore = create<AuthState>((set) => ({
 					access_token,
 					refresh_token,
 					userData: getUserDataRes.data,
-				})
-			} else set({ isLoggedIn: false, isAuthenticate: ok, isRehydrated: true });
-			return;
+				});
+				return;
+			}
+		}
+		if (refresh_token && ok) {
+			const getUserDataRes = await getMeApi(refresh_token);
+			console.log(getUserDataRes);
+			if (getUserDataRes.data?.id) {
+				set({
+					isLoggedIn: true,
+					isRehydrated: true,
+					isAuthenticate: ok,
+					access_token: refresh_token,
+					refresh_token,
+					userData: getUserDataRes.data,
+				});
+				return;
+			}
 		}
 		set({ isLoggedIn: false, isAuthenticate: ok, isRehydrated: true });
+		return;
 	},
 
 	verifyEmail: async (email: string) => {

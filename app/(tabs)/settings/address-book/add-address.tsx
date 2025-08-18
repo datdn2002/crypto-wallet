@@ -67,7 +67,7 @@ export default function AddAddressScreen() {
           disabled={!valid}
           style={[styles.primaryBtn, { backgroundColor: valid ? tint : "#A6A6AA" }]}
         >
-          <Text style={styles.primaryText}>Hoàn tất</Text>
+          <Text style={[styles.primaryText, { color: text }]}>Hoàn tất</Text>
         </Pressable>
       </View>
     </SafeAreaView>

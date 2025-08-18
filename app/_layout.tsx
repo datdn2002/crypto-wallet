@@ -1,11 +1,13 @@
 import { useAppInit } from '@/hooks';
 import { useColorScheme } from '@/hooks/useColorScheme';
+import '@/polyfills';
 import { useAuthStore } from '@/store/auth';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
 import { Redirect, Stack, useSegments } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { ActivityIndicator, SafeAreaView, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import Toast from "react-native-toast-message";
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -15,12 +17,24 @@ export default function RootLayout() {
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
   });
   const isAuthPage = segments[0] === '(auth)';
-  const { isLoggedIn, isAuthenticate } = useAuthStore();
+  const { isLoggedIn, isAuthenticate, rehydrate, userData } = useAuthStore();
+  console.log({ userData })
 
   if (!isAuthenticate) {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
         <ActivityIndicator size="large" />
+        <TouchableOpacity
+          style={{
+            backgroundColor: "#007AFF",
+            padding: 15,
+            borderRadius: 8,
+            marginTop: 10,
+          }}
+          onPress={() => rehydrate()}
+        >
+          <Text style={{ color: '#fff' }}>Xác thực lại</Text>
+        </TouchableOpacity>
       </View>
     )
   }
@@ -42,18 +56,21 @@ export default function RootLayout() {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
-      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-        <Stack screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-          <Stack.Screen name="(scan)" options={{ headerShown: false }} />
-          <Stack.Screen name="+not-found" />
-          <Stack.Screen name="account" options={{ headerShown: false }} />
-        </Stack>
-        <StatusBar style="auto" />
-      </ThemeProvider>
-    </SafeAreaView>
+    <>
+      <SafeAreaView style={[styles.container, { backgroundColor: colorScheme === 'dark' ? "#151718" : "#fff" }]}>
+        <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+          <Stack screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+            <Stack.Screen name="(scan)" options={{ headerShown: false }} />
+            <Stack.Screen name="+not-found" />
+            <Stack.Screen name="account" options={{ headerShown: false }} />
+          </Stack>
+          <StatusBar style="auto" />
+        </ThemeProvider>
+      </SafeAreaView>
+      <Toast />
+    </>
   );
 }
 

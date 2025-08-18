@@ -1,5 +1,6 @@
 import React from "react";
-import { Dimensions, Image, Modal, Pressable, StyleSheet, Text, View } from "react-native";
+import { Dimensions, Image, Pressable, StyleSheet, Text, View } from "react-native";
+import { ThemedModal } from "../theme";
 
 const { width, height } = Dimensions.get("window");
 
@@ -12,40 +13,31 @@ interface CreateWalletModalProps {
 
 export function CreateWalletModal({ visible, onClose, onAddExisting, onCreateNew }: CreateWalletModalProps) {
   return (
-    <Modal
-      visible={visible}
-      animationType="slide"
-      transparent
-      onRequestClose={onClose}
-    >
-      <View style={styles.overlay}>
-        <View style={styles.modalContainer}>
-          {/* Nút đóng */}
-          <Pressable style={styles.closeBtn} onPress={onClose}>
-            <Text style={{ fontSize: 20 }}>✕</Text>
-          </Pressable>
+    <ThemedModal visible={visible} onClose={onClose}>
 
-          {/* Icon ví */}
-          <Image
-            source={require("@/assets/images/wallet-img.png")} // ảnh ví của bạn
-            style={styles.icon}
-            resizeMode="contain"
-          />
 
-          {/* Nút tạo ví mới */}
-          <Pressable style={styles.option} onPress={onCreateNew}>
-            <Text style={styles.title}>Tạo ví mới</Text>
-            <Text style={styles.subTitle}>Cụm từ bí mật hoặc FaceID/vân tay</Text>
-          </Pressable>
+      {/* Icon ví */}
+      <View style={{ justifyContent: 'center', alignItems: 'center' }}>
 
-          {/* Nút thêm ví hiện có */}
-          <Pressable style={styles.option} onPress={onAddExisting}>
-            <Text style={styles.title}>Thêm ví hiện có</Text>
-            <Text style={styles.subTitle}>Cụm từ bí mật, Icloud hoặc chỉ xem</Text>
-          </Pressable>
-        </View>
+        <Image
+          source={require("@/assets/images/wallet-img.png")} // ảnh ví của bạn
+          style={styles.icon}
+          resizeMode="contain"
+        />
       </View>
-    </Modal>
+
+      {/* Nút tạo ví mới */}
+      <Pressable style={styles.option} onPress={onCreateNew}>
+        <Text style={styles.title}>Tạo ví mới</Text>
+        <Text style={styles.subTitle}>Cụm từ bí mật hoặc FaceID/vân tay</Text>
+      </Pressable>
+
+      {/* Nút thêm ví hiện có */}
+      <Pressable style={styles.option} onPress={onAddExisting}>
+        <Text style={styles.title}>Thêm ví hiện có</Text>
+        <Text style={styles.subTitle}>Cụm từ bí mật, Icloud hoặc chỉ xem</Text>
+      </Pressable>
+    </ThemedModal>
   );
 }
 

@@ -2,6 +2,7 @@
 import { getTokens, Token } from "@/api";
 import { AppHeader } from "@/components/theme";
 import { TimeframeSelect } from "@/components/TimeframeSelect";
+import { useThemeColor } from "@/hooks/useThemeColor";
 import { useAuthStore } from "@/store/auth";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
@@ -13,18 +14,124 @@ import {
     SafeAreaView,
     StyleSheet,
     Text,
+    TouchableOpacity,
     View,
 } from "react-native";
 
+/** Utils */
+function addAlpha(color: string, alpha: number) {
+    if (color.startsWith("rgb")) {
+        const [r, g, b] = color
+            .replace(/rgba?\(|\)|\s/g, "")
+            .split(",")
+            .slice(0, 3)
+            .map((x) => parseInt(x, 10));
+        return `rgba(${r},${g},${b},${alpha})`;
+    }
+    let c = color.replace("#", "");
+    if (c.length === 3) c = c.split("").map((x) => x + x).join("");
+    const r = parseInt(c.slice(0, 2), 16);
+    const g = parseInt(c.slice(2, 4), 16);
+    const b = parseInt(c.slice(4, 6), 16);
+    return `rgba(${r},${g},${b},${alpha})`;
+}
+
+/** Hook styles theo theme */
+function useStyles() {
+    const bg = useThemeColor({}, "background");
+    const text = useThemeColor({}, "text");
+    const border = useThemeColor({}, "border");
+    const card = useThemeColor({}, "card");
+    const muted = useThemeColor({}, "muted");
+    const tint = useThemeColor({}, "tint");
+
+    // bề mặt phụ nhẹ cho avatar/logo
+    const softSurface = addAlpha(border, 0.25);
+
+    const styles = StyleSheet.create({
+        container: { flex: 1, backgroundColor: bg },
+
+        filtersRow: {
+            flexDirection: "row",
+            flexWrap: "wrap",
+            gap: 8,
+            paddingHorizontal: 16,
+            paddingBottom: 12,
+        },
+        chip: {
+            borderRadius: 12,
+            paddingHorizontal: 10,
+            paddingVertical: 6,
+            borderWidth: 1,
+            borderColor: border,
+            backgroundColor: card,
+            justifyContent: 'center'
+        },
+        chipActive: {
+            backgroundColor: addAlpha(tint, 0.08),
+            borderColor: addAlpha(tint, 0.6),
+        },
+        chipText: { fontSize: 13, color: text },
+        chipTextActive: { color: tint, fontWeight: "600" },
+
+        loadingWrap: { flex: 1, alignItems: "center", justifyContent: "center" },
+        emptyList: { flexGrow: 1, alignItems: "center", justifyContent: "center" },
+        emptyText: { color: muted },
+
+        separator: { height: 12 },
+
+        row: {
+            paddingHorizontal: 16,
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+        },
+        left: { flexDirection: "row", alignItems: "center", gap: 12, flex: 1 },
+        logoWrap: { width: 44, height: 44 },
+        logo: {
+            width: 44,
+            height: 44,
+            borderRadius: 22,
+            backgroundColor: softSurface,
+        },
+        chainBadge: {
+            position: "absolute",
+            right: -2,
+            bottom: -2,
+            width: 18,
+            height: 18,
+            borderRadius: 9,
+            backgroundColor: card,
+            alignItems: "center",
+            justifyContent: "center",
+            borderWidth: 1,
+            borderColor: border,
+        },
+        chainLogo: { width: 14, height: 14 },
+
+        nameCol: { flex: 1 },
+        symbol: { fontSize: 16, fontWeight: "600", color: text },
+        subText: { fontSize: 12, color: muted, marginTop: 2 },
+
+        right: { alignItems: "flex-end" },
+        price: { fontSize: 16, fontWeight: "700", color: text },
+        percent: { marginTop: 4, fontSize: 13, fontWeight: "600" },
+        up: { color: "#059669" },
+        down: { color: "#DC2626" },
+    });
+
+    return { styles };
+}
 
 export default function TrendingTokensScreen() {
+    const { styles } = useStyles();
     const { access_token } = useAuthStore();
     const [tokens, setTokens] = useState<Token[]>([]);
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
 
-    // UI filters (placeholder – bạn có thể nối API sau)
-    const [range, setRange] = useState<"24H" | "1H">("24H");
+    // UI filters
+    const [timeframe, setTimeframe] = useState<"24h" | "1h">("24h");
     const [segment, setSegment] = useState<"all" | "gainers" | "losers">("all");
     const [chainFilter, setChainFilter] = useState<string | "all">("all");
 
@@ -34,7 +141,7 @@ export default function TrendingTokensScreen() {
             setLoading(true);
             const res = await getTokens({
                 token: access_token,
-                params: { includeMarketData: true },
+                params: { includeMarketData: true, timeframes: timeframe },
             });
             if (res?.statusCode === 200) {
                 setTokens(res.data);
@@ -42,7 +149,7 @@ export default function TrendingTokensScreen() {
         } finally {
             setLoading(false);
         }
-    }, [access_token]);
+    }, [access_token, timeframe]);
 
     useEffect(() => {
         fetchData();
@@ -64,12 +171,9 @@ export default function TrendingTokensScreen() {
         }
     }, [access_token]);
 
-    // filter/sort demo (hiện sắp xếp theo volume desc – giống “thịnh hành”)
     const data = useMemo(() => {
         let arr = [...tokens];
-        if (chainFilter !== "all") {
-            arr = arr.filter((t) => t.chain === chainFilter);
-        }
+        if (chainFilter !== "all") arr = arr.filter((t) => t.chain === chainFilter);
         if (segment === "gainers") {
             arr = arr.filter(
                 (t) => Number(t.market_data?.price_change_percentage_24h ?? 0) > 0
@@ -79,7 +183,6 @@ export default function TrendingTokensScreen() {
                 (t) => Number(t.market_data?.price_change_percentage_24h ?? 0) < 0
             );
         }
-        // sort theo volume_24h desc
         arr.sort(
             (a, b) =>
                 (b.market_data?.volume_24h ?? 0) - (a.market_data?.volume_24h ?? 0)
@@ -90,10 +193,10 @@ export default function TrendingTokensScreen() {
     return (
         <SafeAreaView style={styles.container}>
             <AppHeader title="Token thịnh hành" />
-            <View style={{ height: 16 }}></View>
+            <View style={{ height: 16 }} />
             <Filters
-                range={range}
-                setRange={setRange}
+                timeframe={timeframe}
+                setTimeframe={setTimeframe}
                 segment={segment}
                 setSegment={setSegment}
                 chainFilter={chainFilter}
@@ -115,7 +218,21 @@ export default function TrendingTokensScreen() {
                     }
                     contentContainerStyle={data.length === 0 && styles.emptyList}
                     ListEmptyComponent={
-                        <Text style={styles.emptyText}>Không có token nào</Text>
+                        <View>
+                            <Text style={styles.emptyText}>Không có token nào</Text>
+                            <TouchableOpacity
+                                style={{
+                                    backgroundColor: "#007AFF",
+                                    padding: 15,
+                                    borderRadius: 8,
+                                    marginTop: 10,
+                                    alignItems: 'center'
+                                }}
+                                onPress={onRefresh}
+                            >
+                                <Text style={{ color: '#fff' }}>Làm mới</Text>
+                            </TouchableOpacity>
+                        </View>
                     }
                 />
             )}
@@ -126,6 +243,7 @@ export default function TrendingTokensScreen() {
 /* ============================ Row ============================ */
 
 function TokenRow({ item }: { item: Token }) {
+    const { styles } = useStyles();
     const md = item.market_data;
     const price = md?.current_price ?? 0;
     const change24 = Number(md?.price_change_percentage_24h ?? 0);
@@ -166,6 +284,7 @@ function TokenRow({ item }: { item: Token }) {
 }
 
 function PercentText({ value }: { value: number }) {
+    const { styles } = useStyles();
     const isUp = value >= 0;
     return (
         <Text style={[styles.percent, isUp ? styles.up : styles.down]}>
@@ -178,23 +297,24 @@ function PercentText({ value }: { value: number }) {
 /* ============================ Filters (UI only) ============================ */
 
 function Filters({
-    range,
-    setRange,
+    timeframe,
+    setTimeframe,
     segment,
     setSegment,
     chainFilter,
     setChainFilter,
 }: {
-    range: "24H" | "1H";
-    setRange: (v: "24H" | "1H") => void;
+    timeframe: "24h" | "1h";
+    setTimeframe: (v: "24h" | "1h") => void;
     segment: "all" | "gainers" | "losers";
     setSegment: (v: "all" | "gainers" | "losers") => void;
     chainFilter: string | "all";
     setChainFilter: (v: string | "all") => void;
 }) {
+    const { styles } = useStyles();
     return (
         <View style={styles.filtersRow}>
-            <TimeframeSelect value={range} onChange={setRange} />
+            <TimeframeSelect value={timeframe} onChange={setTimeframe} />
 
             <View style={{ width: 8 }} />
 
@@ -214,7 +334,6 @@ function Filters({
                 onPress={() => setSegment("losers")}
             />
 
-            {/* Demo chain filter – bạn có thể thay bằng menu chọn chain động */}
             <View style={{ width: 8 }} />
             <Chip
                 active={chainFilter === "all"}
@@ -226,6 +345,24 @@ function Filters({
                 label="BNB Smart Chain"
                 onPress={() => setChainFilter("bsc")}
             />
+            <Chip
+                active={chainFilter === "ethereum"}
+                label="Ethereum"
+                onPress={() => setChainFilter("ethereum")}
+            />
+            <Chip
+
+                active={chainFilter === "polygon"}
+                label="Polygon"
+                onPress={() => setChainFilter("polygon")}
+            />
+            <Chip
+                active={chainFilter === "base"}
+                label="Base"
+                onPress={() => setChainFilter("base")}
+            />
+
+
         </View>
     );
 }
@@ -239,13 +376,11 @@ function Chip({
     label: string;
     onPress?: () => void;
 }) {
+    const { styles } = useStyles();
     return (
         <Pressable
             onPress={onPress}
-            style={[
-                styles.chip,
-                active ? styles.chipActive : undefined,
-            ]}
+            style={[styles.chip, active ? styles.chipActive : undefined]}
         >
             <Text style={[styles.chipText, active ? styles.chipTextActive : undefined]}>
                 {label}
@@ -254,98 +389,17 @@ function Chip({
     );
 }
 
-/* ============================ Utils ============================ */
+/* ============================ Formatters ============================ */
 
 function formatUSD(n: number) {
     if (!isFinite(n)) return "-";
-    // giữ giống screenshot: có thể dùng dấu phẩy thập phân
-    return `${n.toLocaleString(undefined, {
-        maximumFractionDigits: 6,
-    })} $`;
+    return `${n.toLocaleString(undefined, { maximumFractionDigits: 6 })} $`;
 }
 function formatPercent(n: number) {
-    return `${Math.abs(n).toLocaleString(undefined, {
-        maximumFractionDigits: 2,
-    })}%`;
+    return `${Math.abs(n).toLocaleString(undefined, { maximumFractionDigits: 2 })}%`;
 }
 function formatVolume(n: number) {
     if (!isFinite(n)) return "-";
-    // volume là USD → compact theo triệu (M)
     const million = n / 1_000_000;
-    return `${million.toLocaleString(undefined, {
-        maximumFractionDigits: 2,
-    })} $M`;
+    return `${million.toLocaleString(undefined, { maximumFractionDigits: 2 })} $M`;
 }
-
-/* ============================ Styles ============================ */
-
-const styles = StyleSheet.create({
-    container: { flex: 1, backgroundColor: "#fff" },
-
-    filtersRow: {
-        flexDirection: "row",
-        flexWrap: "wrap",
-        gap: 8,
-        paddingHorizontal: 16,
-        paddingBottom: 12,
-    },
-    chip: {
-        borderRadius: 12,
-        paddingHorizontal: 10,
-        paddingVertical: 6,
-        borderWidth: 1,
-        borderColor: "#E5E7EB",
-        backgroundColor: "#fff",
-    },
-    chipActive: {
-        backgroundColor: "#EEF2FF",
-        borderColor: "#C7D2FE",
-    },
-    chipText: { fontSize: 13, color: "#374151" },
-    chipTextActive: { color: "#1E40AF", fontWeight: "600" },
-
-    loadingWrap: { flex: 1, alignItems: "center", justifyContent: "center" },
-    emptyList: { flexGrow: 1, alignItems: "center", justifyContent: "center" },
-    emptyText: { color: "#6B7280" },
-
-    separator: { height: 12 },
-
-    row: {
-        paddingHorizontal: 16,
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "space-between",
-    },
-    left: { flexDirection: "row", alignItems: "center", gap: 12, flex: 1 },
-    logoWrap: { width: 44, height: 44 },
-    logo: {
-        width: 44,
-        height: 44,
-        borderRadius: 22,
-        backgroundColor: "#F3F4F6",
-    },
-    chainBadge: {
-        position: "absolute",
-        right: -2,
-        bottom: -2,
-        width: 18,
-        height: 18,
-        borderRadius: 9,
-        backgroundColor: "#fff",
-        alignItems: "center",
-        justifyContent: "center",
-        borderWidth: 1,
-        borderColor: "#E5E7EB",
-    },
-    chainLogo: { width: 14, height: 14 },
-
-    nameCol: { flex: 1 },
-    symbol: { fontSize: 16, fontWeight: "600", color: "#111827" },
-    subText: { fontSize: 12, color: "#6B7280", marginTop: 2 },
-
-    right: { alignItems: "flex-end" },
-    price: { fontSize: 16, fontWeight: "700", color: "#111827" },
-    percent: { marginTop: 4, fontSize: 13, fontWeight: "600" },
-    up: { color: "#059669" },
-    down: { color: "#DC2626" },
-});

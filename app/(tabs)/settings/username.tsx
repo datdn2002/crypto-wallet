@@ -64,9 +64,6 @@ export default function UsernameScreen() {
         >
           <View style={styles.modalHeader}>
             <Text style={[styles.modalTitle, { color: text }]}>Đăng ký tên người dùng</Text>
-            <Pressable onPress={() => setOpen(false)} hitSlop={10}>
-              <Ionicons name="close" size={22} color={icon} />
-            </Pressable>
           </View>
 
           <View style={styles.fieldBlock}>

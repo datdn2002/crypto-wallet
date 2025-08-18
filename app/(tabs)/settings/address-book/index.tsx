@@ -36,7 +36,7 @@ export default function AddressBookScreen() {
         </Text>
 
         <Pressable style={[styles.cta, { backgroundColor: tint }]} onPress={goAdd}>
-          <Text style={styles.ctaText}>Thêm địa chỉ ví</Text>
+          <Text style={[styles.ctaText, { color: bg }]}>Thêm địa chỉ ví</Text>
         </Pressable>
       </View>
     </SafeAreaView>
