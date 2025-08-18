@@ -37,6 +37,7 @@ axiosClient.interceptors.response.use(
 		return response.data;
 	},
 	async (err) => {
+		console.log(err);
 		const response: AxiosResponse = err?.response;
 		// const status = response?.status;
 		// if (status == 404 || status == 401 || status == 400) {
