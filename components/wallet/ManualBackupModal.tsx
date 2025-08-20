@@ -84,7 +84,11 @@ export function ManualBackupModal({ visible, onClose, onFinish, wordCount = 12, 
 									: "Xác nhận cụm từ bí mật"}
 					</Text>
 					<Pressable onPress={closeAndReset}>
-						<Ionicons name={step === 1 ? "trash-outline" : "information-circle-outline"} size={20} color={icon} />
+						<Ionicons
+							name={step === 1 ? "trash-outline" : "information-circle-outline"}
+							size={20}
+							color={"transparent"}
+						/>
 					</Pressable>
 				</View>
 

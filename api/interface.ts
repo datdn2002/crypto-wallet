@@ -48,7 +48,7 @@ export interface ChartCandle {
 	volume: number;
 }
 
-export type Timeframe = '1m' | '15m' | '1h' | '3h' | '24h';
+export type Timeframe = "1m" | "15m" | "1h" | "3h" | "24h";
 
 export interface TokenWithMarketData {
 	symbol: string;

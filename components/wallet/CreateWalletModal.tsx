@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Dimensions, Image, Pressable, StyleSheet, Text, View } from "react-native";
+import React, { useEffect, useRef, useState } from "react";
+import { Dimensions, Image, InteractionManager, Pressable, StyleSheet, Text, View } from "react-native";
 import { ThemedModal } from "../theme";
 import { DotLoading } from "../ui";
 
@@ -8,32 +8,55 @@ const { width, height } = Dimensions.get("window");
 interface CreateWalletModalProps {
 	visible: boolean;
 	onClose: () => void;
-	onCreateNew: () => Promise<void>; // Callback khi chọn "Tạo ví mới"
-	onAddExisting: () => void; // Callback khi chọn "Thêm ví hiện có"
+	onCreateNew: () => Promise<void>;
+	onAddExisting: () => void;
+}
+
+function deferOneFrame(time = 100) {
+	// đảm bảo loading UI render trước khi chạy tác vụ nặng
+	return new Promise<void>((resolve) => requestAnimationFrame(() => setTimeout(resolve, time)));
 }
 
 export function CreateWalletModal({ visible, onClose, onAddExisting, onCreateNew }: CreateWalletModalProps) {
 	const [loading, setLoading] = useState(false);
+	const creatingRef = useRef(false);
+	useEffect(() => {
+		if (loading) {
+			setTimeout(() => {
+				setLoading(false);
+			}, 5000);
+		}
+	}, [loading]);
+
+	const handlePress = async () => {
+		if (creatingRef.current) return; // chống double-tap
+		creatingRef.current = true;
+		setLoading(true);
+
+		console.log(InteractionManager.runAfterInteractions);
+
+		// InteractionManager.runAfterInteractions(async () => {
+		try {
+			await deferOneFrame(); // 👈 nhường 1 frame cho spinner
+			await onCreateNew(); // ⛏️ việc nặng chạy ở đây
+		} catch (e) {
+			console.error("Error creating wallet:", e);
+		} finally {
+			creatingRef.current = false;
+			setLoading(false);
+		}
+		// });
+	};
+
 	return (
 		<ThemedModal visible={visible} onClose={onClose} heightPercent={0.5}>
 			{/* Icon ví */}
 			<View style={{ justifyContent: "center", alignItems: "center" }}>
-				<Image
-					source={require("@/assets/images/wallet-img.png")} // ảnh ví của bạn
-					style={styles.icon}
-					resizeMode="contain"
-				/>
+				<Image source={require("@/assets/images/wallet-img.png")} style={styles.icon} resizeMode="contain" />
 			</View>
 
 			{/* Nút tạo ví mới */}
-			<Pressable
-				style={styles.option}
-				onPress={async () => {
-					setLoading(true);
-					await onCreateNew();
-					setLoading(false);
-				}}
-			>
+			<Pressable style={styles.option} onPress={handlePress}>
 				<Text style={styles.title}>Tạo ví mới</Text>
 				<Text style={styles.subTitle}>Cụm từ bí mật hoặc FaceID/vân tay</Text>
 			</Pressable>

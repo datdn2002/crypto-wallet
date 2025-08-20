@@ -1,3 +1,4 @@
+import { Colors } from "@/constants/Colors";
 import { useAppInit } from "@/hooks";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import "@/polyfills";
@@ -17,7 +18,7 @@ export default function RootLayout() {
 		SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
 	});
 	const isAuthPage = segments[0] === "(auth)";
-	const { isLoggedIn, isAuthenticate, rehydrate, userData } = useAuthStore();
+	const { isLoggedIn, isAuthenticate, rehydrate } = useAuthStore();
 
 	if (!isAuthenticate) {
 		return (
@@ -56,7 +57,12 @@ export default function RootLayout() {
 
 	return (
 		<>
-			<SafeAreaView style={[styles.container, { backgroundColor: colorScheme === "dark" ? "#151718" : "#fff" }]}>
+			<SafeAreaView
+				style={[
+					styles.container,
+					{ backgroundColor: colorScheme === "dark" ? Colors.dark.background : Colors.light.background },
+				]}
+			>
 				<ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
 					<Stack screenOptions={{ headerShown: false }}>
 						<Stack.Screen name="(tabs)" options={{ headerShown: false }} />
