@@ -21,3 +21,10 @@ export async function getMeApi(token: string) {
 		token,
 	});
 }
+
+export async function sendOtp(email: string, userId: string) {
+	return await axiosClient("otp/send", {
+		method: "POST",
+		data: JSON.stringify({ email, type: "email", purpose: "verification", userId }),
+	});
+}

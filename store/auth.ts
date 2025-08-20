@@ -1,4 +1,4 @@
-import { createUser, CreateUserPayload, getMeApi, loginApi, LoginPayload } from "@/api";
+import { createUser, CreateUserPayload, getMeApi, loginApi, LoginPayload, sendOtp } from "@/api";
 import { DeviceStore } from "@/utils";
 import { create } from "zustand";
 import { authenticateBiometric } from "./biometric-auth";
@@ -98,6 +98,10 @@ export const useAuthStore = create<AuthState>((set, _this) => ({
 	},
 
 	verifyEmail: async (email: string) => {
+		console.log("verifyEmail", email);
+		const { userData } = _this();
+		const userId = userData?.id || "";
+		await sendOtp(email, userId);
 		set((pre) => ({ ...pre, registrationData: { email } }));
 	},
 

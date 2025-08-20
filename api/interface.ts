@@ -13,9 +13,8 @@ export interface LoginPayload {
 }
 
 export interface CreateWalletPayload {
-	userId: string;
-	address: string;
-	walletName?: string;
+	walletName: string;
+	walletAddresses: { address: string; chainId: number }[];
 }
 
 export interface TokenQueryParams {

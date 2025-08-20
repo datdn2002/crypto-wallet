@@ -18,7 +18,6 @@ export default function RootLayout() {
 	});
 	const isAuthPage = segments[0] === "(auth)";
 	const { isLoggedIn, isAuthenticate, rehydrate, userData } = useAuthStore();
-	console.log({ userData });
 
 	if (!isAuthenticate) {
 		return (
