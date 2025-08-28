@@ -6,6 +6,7 @@ type Wallet = {
 	id: string;
 	walletName: string;
 	isDefault?: boolean;
+	walletAddresses?: { address: string; chainId: number, chain: { name: string } }[];
 };
 
 type WalletState = {

@@ -1,14 +1,17 @@
+import { getAllBalanceApi } from "@/api";
+import TrendingSlider from "@/components/TrendingSlider";
 import { Wallets } from "@/components/wallet";
 import { Colors } from "@/constants/Colors";
+import { useAuthStore } from "@/store/auth";
 import { useWalletStore } from "@/store/wallet";
 import { Ionicons } from "@expo/vector-icons";
 import { Link, router } from "expo-router";
-import React, { useState } from "react";
-import { Image, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, useColorScheme, View } from "react-native";
+import React, { useEffect, useState } from "react";
+import { Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, useColorScheme, View } from "react-native";
 
 const actionItems = [
-	{ icon: "arrow-up", label: "Rút" },
-	{ icon: "arrow-down", label: "Nạp" },
+	{ icon: "arrow-up", label: "Gửi" },
+	{ icon: "arrow-down", label: "Nhận", onAction: () => router.push("/receive") },
 	{ icon: "swap-horizontal", label: "Hoán đổi" },
 ];
 
@@ -40,6 +43,20 @@ export default function HomePage() {
 	const [isOpenModalWallet, setIsOpenModalWallet] = useState(false);
 	const [tab, setTab] = useState(Tabs[0].id);
 	const { defaultWallet } = useWalletStore();
+	const { access_token } = useAuthStore();
+	console.log("defaultWallet", defaultWallet);
+
+	useEffect(() => {
+		const fetchData = async () => {
+			if (defaultWallet?.walletAddresses?.length && access_token) {
+				for (const addr of defaultWallet.walletAddresses) {
+					const res = await getAllBalanceApi(access_token, addr.address, addr.chain.name);
+					console.log("getAllBalanceApi", res);
+				}
+			}
+		};
+		fetchData();
+	}, [defaultWallet, access_token]);
 
 	return (
 		<ScrollView style={[styles.container, { backgroundColor: theme.background }]}>
@@ -75,9 +92,11 @@ export default function HomePage() {
 			<View style={styles.actionRow}>
 				{actionItems.map((item, idx) => (
 					<View key={idx} style={styles.actionCol}>
-						<View style={[styles.actionIconBox, { borderColor: theme.icon }]}>
-							<Ionicons name={item.icon as any} size={32} color="#3C78FF" />
-						</View>
+						<TouchableOpacity onPress={item.onAction}>
+							<View style={[styles.actionIconBox, { borderColor: theme.icon }]}>
+								<Ionicons name={item.icon as any} size={32} color="#3C78FF" />
+							</View>
+						</TouchableOpacity>
 						<Text style={[styles.actionLabel, { color: theme.text }]}>{item.label}</Text>
 					</View>
 				))}
@@ -85,31 +104,12 @@ export default function HomePage() {
 
 			{/* Trending */}
 			<View style={styles.sectionHeader}>
-				<Text style={[styles.sectionTitle, { color: theme.text }]}>Trending</Text>
+				<Text style={[styles.sectionTitle, { color: theme.text }]}>Thịnh hành</Text>
 				<Ionicons name="arrow-forward-outline" size={18} color="#3C78FF" />
 			</View>
 
-			<View style={styles.tokenRow}>
-				{tokenItems.map((t, i) => (
-					<View key={i} style={[styles.tokenCard]}>
-						<View style={styles.tokenLeft}>
-							<View style={styles.tokenLogoWrap}>
-								<Image source={{ uri: t.logo }} style={styles.tokenLogo} />
-							</View>
-							<View>
-								<Text style={[styles.tokenName, { color: theme.text }]} numberOfLines={1}>
-									{t.name}
-								</Text>
-								<Text style={[styles.tokenSub, { color: theme.icon }]}>{t.marketCap}</Text>
-							</View>
-						</View>
-
-						<View style={styles.tokenRight}>
-							<Text style={[styles.tokenPrice, { color: theme.text }]}>{t.price}</Text>
-							<Text style={styles.tokenChange}>{t.change}</Text>
-						</View>
-					</View>
-				))}
+			<View style={{ marginBlock: 10 }}>
+				<TrendingSlider />
 			</View>
 
 			{/* Tabs */}
@@ -123,7 +123,9 @@ export default function HomePage() {
 					</Pressable>
 				))}
 				<View style={{ flex: 1 }} />
-				<Ionicons name="options-outline" size={24} color={theme.icon} />
+				<TouchableOpacity onPress={() => router.push("/manage-token")}>
+					<Ionicons name="options-outline" size={24} color={theme.icon} />
+				</TouchableOpacity>
 			</View>
 
 			{/* Empty State */}
@@ -138,7 +140,9 @@ export default function HomePage() {
 					<Text style={styles.secondaryBtnText}>Nạp tiền mã hóa</Text>
 				</TouchableOpacity>
 
-				<Text style={styles.manageLink}>Quản lý tiền mã hóa</Text>
+				<TouchableOpacity onPress={() => router.push("/manage-token")}>
+					<Text style={styles.manageLink}>Quản lý tiền mã hóa</Text>
+				</TouchableOpacity>
 			</View>
 		</ScrollView>
 	);
@@ -195,13 +199,12 @@ const styles = StyleSheet.create({
 		width: 56,
 		height: 56,
 		borderRadius: 12,
-		borderWidth: StyleSheet.hairlineWidth,
-		backgroundColor: "#F5F8FF",
+		backgroundColor: "#e8ecf7ff",
 		alignItems: "center",
 		justifyContent: "center",
 		...cardShadow,
 	},
-	actionLabel: { fontSize: 12, marginTop: 6 },
+	actionLabel: { fontSize: 14, marginTop: 6 },
 
 	/* Section header */
 	sectionHeader: {
@@ -291,7 +294,7 @@ const styles = StyleSheet.create({
 		marginTop: 10,
 	},
 	secondaryBtnText: { color: "#111", fontWeight: "600" },
-	manageLink: { color: "#3C78FF", fontSize: 12, marginTop: 12 },
+	manageLink: { color: "#3C78FF", fontSize: 13, marginTop: 12 },
 
 	/* Misc */
 	iconColor: { color: "#999" },

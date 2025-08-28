@@ -1,9 +1,11 @@
 // components/wallet/ImportWalletModal.tsx
 import { useThemeColor } from "@/hooks/useThemeColor";
+import { deferOneFrame } from "@/utils";
 import { Ionicons } from "@expo/vector-icons";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import { ThemedModal } from "../theme";
+import { DotLoading } from "../ui";
 
 type Props = {
   visible: boolean;
@@ -22,9 +24,34 @@ export function ImportWalletModal({
   const text = useThemeColor({}, "text");
   const icon = useThemeColor({}, "icon");
   const tint = useThemeColor({}, "tint");
-
   const [label, setLabel] = useState("Ví Bitcoin");
   const [mnemonic, setMnemonic] = useState("");
+  const [loading, setLoading] = useState(false);
+  const creatingRef = useRef(false);
+  useEffect(() => {
+    if (loading) {
+      setTimeout(() => {
+        setLoading(false);
+      }, 5000);
+    }
+  }, [loading]);
+
+  const handlePress = async () => {
+    if (creatingRef.current) return; // chống double-tap
+    creatingRef.current = true;
+    setLoading(true);
+    // InteractionManager.runAfterInteractions(async () => {
+    try {
+      await deferOneFrame();
+      await onSubmit({ label: label.trim(), mnemonic: mnemonic.trim() });
+    } catch (e) {
+      console.error("Error creating wallet:", e);
+    } finally {
+      creatingRef.current = false;
+      setLoading(false);
+    }
+    // });
+  };
 
   // Validate cơ bản: 12–24 từ, cách nhau bởi dấu cách
   const valid = useMemo(() => {
@@ -80,7 +107,7 @@ export function ImportWalletModal({
 
         <Pressable
           disabled={!valid}
-          onPress={() => onSubmit({ label: label.trim(), mnemonic: mnemonic.trim() })}
+          onPress={handlePress}
           style={[
             styles.primaryBtn,
             { backgroundColor: valid ? tint : "#A6A6AA" },
@@ -89,6 +116,7 @@ export function ImportWalletModal({
           <Text style={styles.primaryText}>Khôi phục ví</Text>
         </Pressable>
       </View>
+      <DotLoading visible={loading} />
     </ThemedModal>
   );
 }

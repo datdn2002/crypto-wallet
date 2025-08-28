@@ -2,14 +2,14 @@ import { useThemeColor } from "@/hooks/useThemeColor";
 import { authenticateBiometric } from "@/store/biometric-auth";
 import { Ionicons } from "@expo/vector-icons";
 import React, { useMemo, useState } from "react";
-import { FlatList, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
 import { ThemedModal } from "../theme";
 
 /** ----- Types ------ */
 type Props = {
 	visible: boolean;
 	onClose: () => void;
-	onFinish: (payload: { label: string; seed: string[] }) => void;
+	onFinish: (payload: { seed: string[] }) => void;
 	wordCount?: 12 | 24; // mặc định 12
 	title?: string; // mặc định "Wallet"
 	mnemonic: string;
@@ -33,7 +33,6 @@ export function ManualBackupModal({ visible, onClose, onFinish, wordCount = 12, 
 	const seed = useMemo(() => mnemonic.split(" "), [mnemonic]);
 
 	const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
-	const [label, setLabel] = useState("Ví chính");
 	const [ck1, setCk1] = useState(true);
 	const [ck2, setCk2] = useState(true);
 
@@ -48,14 +47,13 @@ export function ManualBackupModal({ visible, onClose, onFinish, wordCount = 12, 
 	);
 	const [answers, setAnswers] = useState<Record<number, string>>({});
 
-	const canNext1 = label.trim().length > 0 && ck1 && ck2;
+	const canNext1 = ck1 && ck2;
 	const canNext2 = true;
 	const canNext3 = true;
 	const canSubmit4 = questions.every((pos) => answers[pos] === seed[pos - 1]);
 
 	const resetAll = () => {
 		setStep(1);
-		setLabel("Ví chính");
 		setCk1(true);
 		setCk2(true);
 		setAnswers({});
@@ -95,22 +93,6 @@ export function ManualBackupModal({ visible, onClose, onFinish, wordCount = 12, 
 				{/* ----- STEP 1 ----- */}
 				{step === 1 && (
 					<View style={styles.body}>
-						{/* <Text style={[styles.label, { color: text }]}>Tên</Text> */}
-						<View style={[styles.inputRow, { borderColor: "#C7C7CC", display: "none" }]}>
-							<TextInput
-								value={label}
-								onChangeText={setLabel}
-								style={[styles.input, { color: text }]}
-								placeholder="Ví của tôi"
-								placeholderTextColor={icon}
-							/>
-							{label ? (
-								<Pressable onPress={() => setLabel("")}>
-									<Ionicons name="close-circle" size={18} color={icon} />
-								</Pressable>
-							) : null}
-						</View>
-
 						<View style={styles.tipCard}>
 							<View style={{ alignItems: "center", marginBottom: 14 }}>
 								<Ionicons name="shield-outline" size={68} color={tint} />
@@ -230,7 +212,7 @@ export function ManualBackupModal({ visible, onClose, onFinish, wordCount = 12, 
 						<Pressable
 							disabled={!canSubmit4}
 							onPress={() => {
-								onFinish({ label: label.trim(), seed });
+								onFinish({ seed });
 								closeAndReset();
 							}}
 							style={[styles.primaryBtn, { backgroundColor: canSubmit4 ? tint : "#A6A6AA" }]}

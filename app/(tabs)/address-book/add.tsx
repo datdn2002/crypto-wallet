@@ -40,7 +40,7 @@ export default function AddressBookAddScreen() {
         />
 
         <Pressable
-          onPress={() => router.push({ pathname: "/(tabs)/settings/address-book/select-asset", params: { name } })}
+          onPress={() => router.push({ pathname: "/(tabs)/address-book/select-asset", params: { name } })}
           style={styles.addRow}
         >
           <Ionicons name="add-circle-outline" size={22} color={tint} />

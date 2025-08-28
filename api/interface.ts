@@ -55,7 +55,7 @@ export interface TokenWithMarketData {
 	contract_address: string;
 	chain: string;
 	current_price: number;
-	price_change_percentage_24h: string; // để nguyên string vì API trả về string
+	price_change_percentage_24h: number;
 	volume_24h: number;
 	charts: {
 		[key in Timeframe]: ChartCandle[];

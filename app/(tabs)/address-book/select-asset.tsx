@@ -61,7 +61,7 @@ export default function SelectAssetScreen() {
             style={styles.assetRow}
             onPress={() =>
               router.push({
-                pathname: "/settings/address-book/add-address",
+                pathname: "/(tabs)/address-book/add-address",
                 params: { name, assetId: item.id, symbol: item.symbol, assetName: item.name },
               })
             }

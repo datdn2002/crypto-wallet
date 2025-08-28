@@ -80,7 +80,6 @@ export const useAuthStore = create<AuthState>((set, _this) => ({
 		}
 		if (refresh_token && ok) {
 			const getUserDataRes = await getMeApi(refresh_token);
-			console.log(getUserDataRes);
 			if (getUserDataRes.data?.id) {
 				set({
 					isLoggedIn: true,
@@ -98,7 +97,6 @@ export const useAuthStore = create<AuthState>((set, _this) => ({
 	},
 
 	verifyEmail: async (email: string) => {
-		console.log("verifyEmail", email);
 		const { userData } = _this();
 		const userId = userData?.id || "";
 		await sendOtp(email, userId);

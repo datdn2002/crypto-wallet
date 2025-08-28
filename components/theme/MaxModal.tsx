@@ -90,7 +90,7 @@ export const MaxModal: React.FC<Props> = ({ visible, onClose, children, label })
 						{/* Icon bên phải */}
 						<View style={[styles.rightIcons]}>
 							<TouchableOpacity hitSlop={10} style={styles.iconBtn}>
-								<Ionicons name="settings-outline" size={20} color="black" />
+								<Ionicons name="settings-outline" size={20} color="transparent" />
 							</TouchableOpacity>
 						</View>
 					</View>
@@ -145,6 +145,8 @@ const styles = StyleSheet.create({
 		flexDirection: "row",
 		alignItems: "center",
 		gap: 8,
+		color: "transparent",
+		backgroundColor: "transparent",
 	},
 	iconBtn: {
 		padding: 6,

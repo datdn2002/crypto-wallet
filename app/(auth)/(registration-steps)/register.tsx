@@ -30,7 +30,6 @@ const RegisterScreen = () => {
 			Alert.alert("Please enter your email");
 			return;
 		}
-		console.log("handleContinue", email);
 		await verifyEmail(email);
 		router.push("/(auth)/(registration-steps)/otp");
 		Alert.alert("Continue with email:", email);

@@ -1,6 +1,13 @@
 import axiosClient from "./axiosClient";
 import { CreateWalletPayload } from "./interface";
 
+export async function getAllBalanceApi(token: string, wallet_address: string, chain: string = "eth") {
+	return await axiosClient(`wallet/${wallet_address}/all-balances?chain=${chain}`, {
+		method: "GET",
+		token,
+	});
+}
+
 export async function getAllWalletsApi(token: string) {
 	return await axiosClient("wallet?limit=50", {
 		method: "GET",

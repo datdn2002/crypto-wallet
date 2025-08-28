@@ -66,7 +66,6 @@ export async function createNewWallet(
 	walletName = "My Wallet",
 	chains: ChainKey[] = DEFAULT_CHAINS
 ): Promise<boolean> {
-	console.log("start");
 	try {
 		// 1) Sinh mnemonic (giữ fallback expo-random)
 		let mnemonic: string;
@@ -82,13 +81,11 @@ export async function createNewWallet(
 				throw e;
 			}
 		}
-		console.log("start 2");
 		// 3) Build payload cho API mới
 		const walletAddresses = chains.map((c) => {
 			const { address } = deriveEvmAddressForChain(mnemonic, c);
 			return { address, chainId: CHAIN_ID_MAP[c] };
 		});
-		console.log("start 3");
 		const payload: CreateWalletApiBody = { walletName, walletAddresses };
 
 		// 4) Gọi API
@@ -100,7 +97,6 @@ export async function createNewWallet(
 			return true;
 		}
 
-		console.log("createNewWallet: unexpected response", resp);
 		return false;
 	} catch (error) {
 		console.log("createNewWallet (multi-chain, api v2) error:", error);
@@ -161,7 +157,6 @@ export async function getWalletMnemonic(walletId: string): Promise<string | null
 }
 
 export async function deleteWalletById(walletId: string): Promise<void> {
-	console.log("deleteWalletById", walletId);
 	const mnemonicsString = await DeviceStore.getItem("mnemonics");
 	const mnemonics = mnemonicsString ? (JSON.parse(mnemonicsString) as Record<string, string>) : {};
 	if (mnemonics[walletId]) {

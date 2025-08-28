@@ -1,5 +1,6 @@
+import { deferOneFrame } from "@/utils";
 import React, { useEffect, useRef, useState } from "react";
-import { Dimensions, Image, InteractionManager, Pressable, StyleSheet, Text, View } from "react-native";
+import { Dimensions, Image, Pressable, StyleSheet, Text, View } from "react-native";
 import { ThemedModal } from "../theme";
 import { DotLoading } from "../ui";
 
@@ -10,11 +11,6 @@ interface CreateWalletModalProps {
 	onClose: () => void;
 	onCreateNew: () => Promise<void>;
 	onAddExisting: () => void;
-}
-
-function deferOneFrame(time = 100) {
-	// đảm bảo loading UI render trước khi chạy tác vụ nặng
-	return new Promise<void>((resolve) => requestAnimationFrame(() => setTimeout(resolve, time)));
 }
 
 export function CreateWalletModal({ visible, onClose, onAddExisting, onCreateNew }: CreateWalletModalProps) {
@@ -29,13 +25,10 @@ export function CreateWalletModal({ visible, onClose, onAddExisting, onCreateNew
 	}, [loading]);
 
 	const handlePress = async () => {
-		if (creatingRef.current) return; // chống double-tap
+		if (creatingRef.current) return;
 		creatingRef.current = true;
 		setLoading(true);
 
-		console.log(InteractionManager.runAfterInteractions);
-
-		// InteractionManager.runAfterInteractions(async () => {
 		try {
 			await deferOneFrame(); // 👈 nhường 1 frame cho spinner
 			await onCreateNew(); // ⛏️ việc nặng chạy ở đây
@@ -45,7 +38,6 @@ export function CreateWalletModal({ visible, onClose, onAddExisting, onCreateNew
 			creatingRef.current = false;
 			setLoading(false);
 		}
-		// });
 	};
 
 	return (

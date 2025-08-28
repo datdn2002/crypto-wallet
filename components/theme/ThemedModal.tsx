@@ -19,9 +19,9 @@ export function ThemedModal({
 	showCloseButton = false,
 }: AppModalProps) {
 	return (
-		<Modal visible={visible} animationType="slide" transparent onRequestClose={onClose}>
+		<Modal visible={visible} animationType="slide" transparent>
 			<Pressable style={styles.overlay} onPress={onClose}>
-				<Pressable onPress={() => {}}>
+				<Pressable onPress={() => { }}>
 					<View style={[styles.modalContainer, { height: height * heightPercent }]}>
 						{showCloseButton && (
 							<Pressable style={styles.closeBtn} onPress={onClose}>

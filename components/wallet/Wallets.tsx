@@ -75,6 +75,7 @@ export function Wallets({ visible, onClose }: Props) {
 				text1: "Thành công 🎉",
 				text2: "Ví đã được khôi phục!",
 			});
+			setRefetch((prev) => prev + 1);
 		} else {
 			Toast.show({
 				type: "error",
@@ -85,7 +86,8 @@ export function Wallets({ visible, onClose }: Props) {
 		setImportOpen(false);
 	};
 
-	const handleManualBackup = async (walletId: string) => {
+	const handleManualBackup = async (walletId: string, index: number) => {
+		setSelectedWalletIdex(index);
 		setBackupOpen(true);
 		setMnemonic((await getWalletMnemonic(walletId)) ?? "");
 	};
@@ -137,7 +139,7 @@ export function Wallets({ visible, onClose }: Props) {
 									</Text>
 									<Text style={styles.cardSub}>Ví đa tiền mã hóa</Text>
 									<View style={{ marginTop: 8 }}>
-										<TouchableOpacity onPress={() => handleManualBackup(item.id)}>
+										<TouchableOpacity onPress={() => handleManualBackup(item.id, index)}>
 											<Text style={styles.link}>Sao lưu thủ công</Text>
 										</TouchableOpacity>
 										{/* <TouchableOpacity>
@@ -200,11 +202,14 @@ export function Wallets({ visible, onClose }: Props) {
 			<ManualBackupModal
 				visible={backupOpen}
 				onClose={() => setBackupOpen(false)}
-				onFinish={({ label, seed }) => {
-					// TODO: lưu label & seed an toàn (KHÔNG sync cloud),
-					// hoặc chuyển sang bước xác thực ví.
+				onFinish={({ seed }) => {
 					setRefetch((prev) => prev + 1);
 					setBackupOpen(false);
+					Toast.show({
+						type: "success",
+						text1: "Thành công 🎉",
+						text2: "Bạn đã sao lưu ví " + wallets[selectedWalletIndex || 0].walletName + " thành công!",
+					});
 				}}
 				wordCount={12} // hoặc 24
 				title="Wallet"
@@ -214,7 +219,6 @@ export function Wallets({ visible, onClose }: Props) {
 				visible={optionOpen}
 				onClose={() => setOptionOpen(false)}
 				onSave={async (name, method) => {
-					console.log("Tên ví:", name, "Phương thức:", method);
 					const selectedWallet = wallets[selectedWalletIndex ?? 0];
 					if (selectedWallet && name !== selectedWallet.walletName && access_token) {
 						await updateWalletApi(access_token, selectedWallet.id, { walletName: name });
@@ -235,7 +239,7 @@ export function Wallets({ visible, onClose }: Props) {
 				onBackup={() => {
 					if (selectedWalletIndex !== null) {
 						const walletId = wallets[selectedWalletIndex].id;
-						handleManualBackup(walletId);
+						handleManualBackup(walletId, selectedWalletIndex);
 						setOptionOpen(false);
 					}
 				}}

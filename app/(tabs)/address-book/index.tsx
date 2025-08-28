@@ -1,7 +1,7 @@
 // app/(wallet)/address-book.tsx
 import { AppHeader } from "@/components/theme"; // ✅ import đúng
 import { useThemeColor } from "@/hooks/useThemeColor";
-import { Ionicons } from "@expo/vector-icons";
+import { MaterialIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import React from "react";
 import { Pressable, SafeAreaView, StyleSheet, Text, View } from "react-native";
@@ -14,7 +14,7 @@ export default function AddressBookScreen() {
   const icon = useThemeColor({}, "icon");
   const tint = useThemeColor({}, "tint");
 
-  const goAdd = () => router.push("/settings/address-book/add");
+  const goAdd = () => router.push("/(tabs)/address-book/add");
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: bg }]}>
@@ -22,13 +22,7 @@ export default function AddressBookScreen() {
 
       <View style={styles.emptyWrap}>
         <View style={styles.iconStack}>
-          <Ionicons name="book-outline" size={90} color={tint} />
-          <Ionicons
-            name="person-circle-outline"
-            size={46}
-            color={tint}
-            style={styles.personIcon}
-          />
+          <MaterialIcons name="perm-contact-cal" size={93} color={tint} />
         </View>
 
         <Text style={[styles.caption, { color: icon }]}>
