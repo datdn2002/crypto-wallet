@@ -4,6 +4,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import React, { useMemo, useState } from "react";
 import { Pressable, SafeAreaView, StyleSheet, Text, TextInput, View } from "react-native";
+import Toast from "react-native-toast-message";
 
 export default function AddressBookAddScreen() {
   const router = useRouter();
@@ -40,7 +41,12 @@ export default function AddressBookAddScreen() {
         />
 
         <Pressable
-          onPress={() => router.push({ pathname: "/(tabs)/address-book/select-asset", params: { name } })}
+          onPress={() => {
+            if (name.trim().length === 0) {
+              Toast.show({ type: "error", text1: "Vui lòng nhập tên ví" });
+            }
+            else router.push({ pathname: "/(tabs)/address-book/select-asset", params: { name } })
+          }}
           style={styles.addRow}
         >
           <Ionicons name="add-circle-outline" size={22} color={tint} />

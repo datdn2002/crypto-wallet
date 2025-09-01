@@ -1,11 +1,13 @@
 import { AddressQRModal } from "@/components/AddressQr";
 import { AppHeader } from "@/components/theme";
 import { useThemeColor } from "@/hooks/useThemeColor";
+import { useWalletStore } from "@/store/wallet";
 import { Ionicons } from "@expo/vector-icons";
 import * as Clipboard from "expo-clipboard";
 import React, { useMemo, useState } from "react";
 import {
   FlatList,
+  Image,
   SafeAreaView,
   StyleSheet,
   Text,
@@ -15,46 +17,25 @@ import {
 } from "react-native";
 import Toast from "react-native-toast-message";
 
-type Token = {
-  id: string;
-  symbol: string;
-  name: string;
-  chain?: string;
-  icon?: string; // có thể là URL hoặc local asset
-};
-
-const TOKENS: Token[] = [
-  { id: "btc", symbol: "BTC", name: "Bitcoin" },
-  { id: "eth-aurora", symbol: "ETH", name: "Aurora", chain: "Aurora" },
-  { id: "ae", symbol: "AE", name: "Aeternity" },
-  { id: "bld", symbol: "BLD", name: "Agoric" },
-  { id: "aion", symbol: "AION", name: "Aion" },
-  { id: "akt", symbol: "AKT", name: "Akash" },
-  { id: "algo", symbol: "ALGO", name: "Algorand" },
-  { id: "apt", symbol: "APT", name: "Aptos" },
-  { id: "eth-arbitrum", symbol: "ETH", name: "Arbitrum", chain: "Arbitrum" },
-  { id: "avax", symbol: "AVAX", name: "Avalanche C-Chain", chain: "Avalanche C-Chain" },
-  { id: "axl", symbol: "AXL", name: "Axelar" },
-  { id: "eth-base", symbol: "ETH", name: "Base", chain: "Base" },
-];
-
 export default function ReceiveScreen() {
   const background = useThemeColor({}, "background");
   const text = useThemeColor({}, "text");
   const icon = useThemeColor({}, "icon");
   const [query, setQuery] = useState("");
-  const [code, setCode] = useState("");
+  const [code, setCode] = useState<{ value: string, name?: string; logo?: string }>({ value: "" });
+  const { tokens, defaultWallet } = useWalletStore();
+  const address = defaultWallet?.walletAddresses?.[0]?.address || "demo-address";
 
   const data = useMemo(() => {
     const q = query.trim().toLowerCase();
-    if (!q) return TOKENS;
-    return TOKENS.filter(
+    if (!q) return tokens;
+    return tokens.filter(
       (t) =>
         t.symbol.toLowerCase().includes(q) ||
         t.name.toLowerCase().includes(q) ||
         (t.chain && t.chain.toLowerCase().includes(q))
     );
-  }, [query]);
+  }, [query, tokens]);
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: background }]}>
@@ -82,7 +63,7 @@ export default function ReceiveScreen() {
             <View style={styles.row}>
               <View style={styles.rowLeft}>
                 {/* icon demo: nếu có file icon riêng thì thay bằng <Image /> */}
-                <View style={styles.tokenCircle} />
+                <Image source={{ uri: item.logo }} style={styles.tokenCircle} resizeMode="cover" />
                 <View style={{ marginLeft: 10 }}>
                   <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
                     <Text style={[styles.symbol, { color: text }]}>{item.symbol}</Text>
@@ -99,7 +80,7 @@ export default function ReceiveScreen() {
 
               <View style={{ flexDirection: "row", gap: 12 }}>
                 <TouchableOpacity
-                  onPress={() => setCode("demo-address-for-" + item.symbol)}
+                  onPress={() => setCode({ value: address, name: item.name, logo: item.logo })}
                   style={[styles.iconBtn, { backgroundColor: background === "#151718" ? "rgba(235,235,245,0.12)" : "#F2F2F7" }]}
                 >
                   <Ionicons name="qr-code-outline" size={20} color={icon} />
@@ -107,7 +88,7 @@ export default function ReceiveScreen() {
 
                 <TouchableOpacity
                   onPress={async () => {
-                    await Clipboard.setStringAsync("demo-address-for-" + item.symbol);
+                    await Clipboard.setStringAsync(address);
                     Toast.show({ type: "success", text1: "Đã sao chép", position: "bottom" });
                   }}
                   style={[styles.iconBtn, { backgroundColor: background === "#151718" ? "rgba(235,235,245,0.12)" : "#F2F2F7" }]}
@@ -122,7 +103,7 @@ export default function ReceiveScreen() {
         contentContainerStyle={{ paddingVertical: 8, paddingBottom: 32 }}
       />
 
-      <AddressQRModal visible={!!code} value={code} onClose={() => setCode("")} />
+      <AddressQRModal visible={!!code} {...code} onClose={() => setCode({ value: "" })} />
     </SafeAreaView>
   );
 }

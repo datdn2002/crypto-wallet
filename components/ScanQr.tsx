@@ -4,7 +4,7 @@ import { useRouter } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
-export default function QrScannerScreen() {
+export function ScanQr({ onEndScan }: { onEndScan: (data: string, type: string) => void }) {
   const router = useRouter();
   const isFocused = useIsFocused();
   const [permission, requestPermission] = useCameraPermissions();
@@ -48,15 +48,8 @@ export default function QrScannerScreen() {
     setScanningEnabled(false);
     setTorch("off");
 
-    router.push({
-      pathname: "/(scan)/qr-result",
-      params: { data, type },
-    });
+    onEndScan(data, type);
   };
-
-  if (!isFocused) {
-    return <View style={styles.container} />;
-  }
 
   return (
     <View style={styles.container}>
@@ -79,7 +72,7 @@ export default function QrScannerScreen() {
         <Pressable style={styles.controlBtn} onPress={() => setTorch(t => (t === "on" ? "off" : "on"))}>
           <Text style={styles.controlText}>{torch === "on" ? "Tắt đèn" : "Bật đèn"}</Text>
         </Pressable>
-        <Pressable style={styles.controlBtn} onPress={() => router.back()}>
+        <Pressable style={styles.controlBtn} onPress={() => onEndScan("", "")}>
           <Text style={styles.controlText}>Đóng</Text>
         </Pressable>
       </View>

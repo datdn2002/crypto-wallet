@@ -1,35 +1,17 @@
-import { getAllBalanceApi } from "@/api";
 import TrendingSlider from "@/components/TrendingSlider";
 import { Wallets } from "@/components/wallet";
 import { Colors } from "@/constants/Colors";
-import { useAuthStore } from "@/store/auth";
 import { useWalletStore } from "@/store/wallet";
+import { DeviceStore } from "@/utils";
 import { Ionicons } from "@expo/vector-icons";
-import { Link, router } from "expo-router";
+import { Link, router, usePathname } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, useColorScheme, View } from "react-native";
+import { FlatList, Image, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, useColorScheme, View } from "react-native";
 
 const actionItems = [
 	{ icon: "arrow-up", label: "Gửi" },
 	{ icon: "arrow-down", label: "Nhận", onAction: () => router.push("/receive") },
-	{ icon: "swap-horizontal", label: "Hoán đổi" },
-];
-
-const tokenItems = [
-	{
-		logo: "https://cryptologos.cc/logos/bitcoin-btc-logo.png",
-		name: "NAME",
-		price: "2,05$",
-		marketCap: "2,5B",
-		change: "+5%",
-	},
-	{
-		logo: "https://cryptologos.cc/logos/ethereum-eth-logo.png",
-		name: "NAME",
-		price: "2,05$",
-		marketCap: "2,5B",
-		change: "+5%",
-	},
+	{ icon: "swap-horizontal", label: "Hoán đổi", onAction: () => router.push("/swap") },
 ];
 
 const Tabs = [
@@ -38,25 +20,19 @@ const Tabs = [
 ];
 
 export default function HomePage() {
+	const pathname = usePathname();
 	const colorScheme = useColorScheme() ?? "light";
 	const theme = Colors[colorScheme];
 	const [isOpenModalWallet, setIsOpenModalWallet] = useState(false);
 	const [tab, setTab] = useState(Tabs[0].id);
-	const { defaultWallet } = useWalletStore();
-	const { access_token } = useAuthStore();
-	console.log("defaultWallet", defaultWallet);
+	const { defaultWallet, tokens } = useWalletStore();
+	const [enabledTokens, setEnabledTokens] = useState<string[]>([]);
 
 	useEffect(() => {
-		const fetchData = async () => {
-			if (defaultWallet?.walletAddresses?.length && access_token) {
-				for (const addr of defaultWallet.walletAddresses) {
-					const res = await getAllBalanceApi(access_token, addr.address, addr.chain.name);
-					console.log("getAllBalanceApi", res);
-				}
-			}
-		};
-		fetchData();
-	}, [defaultWallet, access_token]);
+		const load = async () =>
+			setEnabledTokens(JSON.parse(await DeviceStore.getItem("enabledTokens") || "[]"));
+		load();
+	}, [pathname]);
 
 	return (
 		<ScrollView style={[styles.container, { backgroundColor: theme.background }]}>
@@ -70,7 +46,7 @@ export default function HomePage() {
 				</Pressable>
 
 				<Pressable onPress={() => setIsOpenModalWallet(true)} style={styles.walletSwitcher}>
-					<Text style={[styles.walletTitle, { color: theme.text }]}>{defaultWallet?.walletName || "Ví Crypto"}</Text>
+					<Text style={[styles.walletTitle, { color: theme.text }]}>{defaultWallet?.walletName || "Ví Easy Crypto"}</Text>
 					<Ionicons name="chevron-down" size={16} color={theme.icon} style={{ marginLeft: 4 }} />
 				</Pressable>
 
@@ -129,17 +105,37 @@ export default function HomePage() {
 			</View>
 
 			{/* Empty State */}
+			<FlatList
+				data={tokens.filter(t => enabledTokens.includes(t.symbol + ":" + t.chain))}
+				keyExtractor={(item, index) => "home_token-" + index}
+				renderItem={({ item }) => {
+					return (
+						<View style={styles.row}>
+							<View style={styles.rowLeft}>
+								<Image source={{ uri: item.logo }} style={styles.tokenCircle} resizeMode="cover" />
+								<View style={{ marginLeft: 10 }}>
+									<View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
+										<Text style={[styles.symbol, { color: "#000" }]}>{item.symbol}</Text>
+										{item.chain ? (
+											<View style={styles.chainTag}>
+												<Text style={styles.chainText}>{item.chain}</Text>
+											</View>
+										) : null}
+									</View>
+									<Text style={[styles.name, { color: "#000" }]}>{item.name}</Text>
+								</View>
+							</View>
+
+							<View style={{ flexDirection: "row", gap: 12 }}>
+								<Text style={styles.chainText}>{item.balance}</Text>
+							</View>
+						</View>
+					);
+				}}
+				ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
+				contentContainerStyle={{ paddingVertical: 8, paddingBottom: 8 }}
+			/>
 			<View style={styles.emptyWrap}>
-				<Text style={[styles.emptyTitle, { color: theme.text }]}>Ví của bạn đang trống!</Text>
-
-				<TouchableOpacity style={styles.primaryBtn}>
-					<Text style={styles.primaryBtnText}>Mua tiền mã hóa</Text>
-				</TouchableOpacity>
-
-				<TouchableOpacity style={styles.secondaryBtn}>
-					<Text style={styles.secondaryBtnText}>Nạp tiền mã hóa</Text>
-				</TouchableOpacity>
-
 				<TouchableOpacity onPress={() => router.push("/manage-token")}>
 					<Text style={styles.manageLink}>Quản lý tiền mã hóa</Text>
 				</TouchableOpacity>
@@ -272,7 +268,7 @@ const styles = StyleSheet.create({
 	tabText: { fontSize: 14, marginLeft: 16 },
 
 	/* Empty state */
-	emptyWrap: { alignItems: "center", paddingHorizontal: 16, paddingTop: 10, paddingBottom: 24 },
+	emptyWrap: { alignItems: "center", paddingHorizontal: 16, paddingBottom: 24 },
 	emptyTitle: { fontSize: 13, marginBottom: 12 },
 	primaryBtn: {
 		backgroundColor: "#3C78FF",
@@ -298,4 +294,33 @@ const styles = StyleSheet.create({
 
 	/* Misc */
 	iconColor: { color: "#999" },
+	row: {
+		flexDirection: "row",
+		alignItems: "center",
+		justifyContent: "space-between",
+		paddingHorizontal: 16,
+	},
+	rowLeft: { flexDirection: "row", alignItems: "center" },
+	tokenCircle: {
+		width: 32,
+		height: 32,
+		borderRadius: 16,
+		backgroundColor: "#D0D3D6",
+	},
+	symbol: { fontSize: 15, fontWeight: "600" },
+	name: { fontSize: 13 },
+	chainTag: {
+		backgroundColor: "#E5E5EA",
+		borderRadius: 6,
+		paddingHorizontal: 6,
+		paddingVertical: 1,
+	},
+	chainText: { fontSize: 11, color: "#333" },
+	iconBtn: {
+		width: 40,
+		height: 40,
+		borderRadius: 20,
+		alignItems: "center",
+		justifyContent: "center",
+	},
 });

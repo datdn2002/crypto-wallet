@@ -6,6 +6,7 @@ declare module "axios" {
 	}
 	export interface AxiosResponse {
 		code: number;
+		statusCode: number;
 	}
 }
 

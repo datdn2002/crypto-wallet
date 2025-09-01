@@ -65,3 +65,32 @@ export interface TokenWithMarketData {
 	circulating_supply: number | null;
 	total_supply: number;
 }
+
+export interface WalletAddress {
+	id: string;
+	address: string;
+	alias: number;
+	note: string;
+}
+
+export interface CreateAddressPayload {
+	address: string;
+	alias: number;
+	note: string;
+}
+
+export interface SwapTokenQueryParams {
+	chainId: string;
+	fromTokenAddress: string;
+	toTokenAddress: string;
+	amount: string;
+}
+
+export interface SwapTxQueryParams {
+	chainId: string;
+	fromTokenAddress: string;
+	toTokenAddress: string;
+	amount: string;
+	userAddress: string;
+	slippage: number;
+}

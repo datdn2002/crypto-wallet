@@ -3,71 +3,16 @@ import { ethers } from "ethers";
 import * as Crypto from "expo-crypto";
 import { DeviceStore } from "./device-store";
 
-export type ChainKey =
-	| "eth"
-	| "bsc"
-	| "polygon"
-	| "optimism"
-	| "arbitrum"
-	| "base"
-	| "harmony"
-	| "fantom"
-	| "cronos"
-	| "avalanche"
-	| "celo";
-
-export const DEFAULT_CHAINS: ChainKey[] = [
-	"eth",
-	"bsc",
-	"polygon",
-	"optimism",
-	"arbitrum",
-	"base",
-	"harmony",
-	"fantom",
-	"cronos",
-	"avalanche",
-	"celo",
-];
-
-export const CHAIN_ID_MAP: Record<ChainKey, number> = {
-	eth: 1,
-	bsc: 56,
-	polygon: 137,
-	optimism: 10,
-	arbitrum: 42161,
-	base: 8453,
-	harmony: 1666600000,
-	fantom: 250,
-	cronos: 25,
-	avalanche: 43114,
-	celo: 42220,
-};
-
-// ✅ TẠO VÍ NGAY TẠI PATH, KHÔNG GỌI derivePath("m/...")
-const EVM_BASE_PATH = "m/44'/60'/0'/0";
-
-function deriveEvmAddressForChain(mnemonic: string, chain: ChainKey) {
-	const normalized = mnemonic.trim().replace(/\s+/g, " ").toLowerCase();
-	const index = CHAIN_ID_MAP[chain] ?? 0;
-	const path = `${EVM_BASE_PATH}/${index}`;
-	const w = ethers.HDNodeWallet.fromPhrase(normalized, undefined, path);
-	return { address: w.address, path };
-}
-
 type CreateWalletApiBody = {
 	walletName: string;
 	walletAddresses: { address: string; chainId: number }[];
 };
 
 export async function createNewWallet(
-	_userId: string, // không cần nữa (BE lấy từ token)
 	access_token: string,
 	walletName = "My Wallet",
-	chains: ChainKey[] = DEFAULT_CHAINS
 ): Promise<boolean> {
 	try {
-		// 1) Sinh mnemonic (giữ fallback expo-random)
 		let mnemonic: string;
 		try {
 			const w = ethers.Wallet.createRandom();
@@ -81,23 +26,7 @@ export async function createNewWallet(
 				throw e;
 			}
 		}
-		// 3) Build payload cho API mới
-		const walletAddresses = chains.map((c) => {
-			const { address } = deriveEvmAddressForChain(mnemonic, c);
-			return { address, chainId: CHAIN_ID_MAP[c] };
-		});
-		const payload: CreateWalletApiBody = { walletName, walletAddresses };
-
-		// 4) Gọi API
-		const resp = await createWalletApi(access_token, payload);
-
-		// 5) Lưu local khi thành công
-		if (resp?.code === 201 && resp?.data?.id) {
-			saveWalletToStorage(resp.data.id, mnemonic);
-			return true;
-		}
-
-		return false;
+		return await createWalletFromMnemonic(mnemonic, access_token, walletName);
 	} catch (error) {
 		console.log("createNewWallet (multi-chain, api v2) error:", error);
 		return false;
@@ -106,24 +35,20 @@ export async function createNewWallet(
 
 export async function createWalletFromMnemonic(
 	mnemonic: string,
-	userId: string,
 	access_token: string,
-	label: string,
-	chains = DEFAULT_CHAINS
+	walletName: string,
 ): Promise<boolean> {
 	try {
-		const walletAddresses = chains.map((c) => {
-			const { address } = deriveEvmAddressForChain(mnemonic, c);
-			return { address, chainId: CHAIN_ID_MAP[c] };
+		const wallet = ethers.Wallet.fromPhrase(mnemonic);
+		const walletAddresses = DEFAULT_CHAINS.map((c) => {
+			return { address: wallet.address, chainId: CHAIN_ID_MAP[c] };
 		});
-		const payload: CreateWalletApiBody = { walletName: label, walletAddresses };
+		const payload: CreateWalletApiBody = { walletName, walletAddresses };
 
-		// 4) Gọi API
-		const resp = await createWalletApi(access_token, payload);
-
-		// 5) Lưu local khi thành công
-		if (resp?.code === 201 && resp?.data?.id) {
-			saveWalletToStorage(resp.data.id, mnemonic);
+		const res = await createWalletApi(access_token, payload);
+		console.log("createWalletFromMnemonic", res);
+		if (res?.data?.id) {
+			saveWalletToStorage(res.data.id, mnemonic);
 			return true;
 		}
 		return false;
@@ -164,3 +89,44 @@ export async function deleteWalletById(walletId: string): Promise<void> {
 		await DeviceStore.setItem("mnemonics", JSON.stringify(mnemonics));
 	}
 }
+
+export type ChainKey =
+	| "eth"
+	| "bsc"
+	| "polygon"
+	| "optimism"
+	| "arbitrum"
+	| "base"
+	| "harmony"
+	| "fantom"
+	| "cronos"
+	| "avalanche"
+	| "celo";
+
+export const DEFAULT_CHAINS: ChainKey[] = [
+	"eth",
+	"bsc",
+	"polygon",
+	"optimism",
+	"arbitrum",
+	"base",
+	"harmony",
+	"fantom",
+	"cronos",
+	"avalanche",
+	"celo",
+];
+
+export const CHAIN_ID_MAP: Record<ChainKey, number> = {
+	eth: 1,
+	bsc: 56,
+	polygon: 137,
+	optimism: 10,
+	arbitrum: 42161,
+	base: 8453,
+	harmony: 1666600000,
+	fantom: 250,
+	cronos: 25,
+	avalanche: 43114,
+	celo: 42220,
+};

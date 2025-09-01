@@ -1,8 +1,7 @@
 import { deferOneFrame } from "@/utils";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef } from "react";
 import { Dimensions, Image, Pressable, StyleSheet, Text, View } from "react-native";
 import { ThemedModal } from "../theme";
-import { DotLoading } from "../ui";
 
 const { width, height } = Dimensions.get("window");
 
@@ -14,20 +13,11 @@ interface CreateWalletModalProps {
 }
 
 export function CreateWalletModal({ visible, onClose, onAddExisting, onCreateNew }: CreateWalletModalProps) {
-	const [loading, setLoading] = useState(false);
 	const creatingRef = useRef(false);
-	useEffect(() => {
-		if (loading) {
-			setTimeout(() => {
-				setLoading(false);
-			}, 5000);
-		}
-	}, [loading]);
 
 	const handlePress = async () => {
 		if (creatingRef.current) return;
 		creatingRef.current = true;
-		setLoading(true);
 
 		try {
 			await deferOneFrame(); // 👈 nhường 1 frame cho spinner
@@ -36,7 +26,6 @@ export function CreateWalletModal({ visible, onClose, onAddExisting, onCreateNew
 			console.error("Error creating wallet:", e);
 		} finally {
 			creatingRef.current = false;
-			setLoading(false);
 		}
 	};
 
@@ -58,7 +47,6 @@ export function CreateWalletModal({ visible, onClose, onAddExisting, onCreateNew
 				<Text style={styles.title}>Thêm ví hiện có</Text>
 				<Text style={styles.subTitle}>Cụm từ bí mật, Icloud hoặc chỉ xem</Text>
 			</Pressable>
-			<DotLoading visible={loading} />
 		</ThemedModal>
 	);
 }

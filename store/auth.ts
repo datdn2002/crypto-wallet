@@ -56,31 +56,31 @@ export const useAuthStore = create<AuthState>((set, _this) => ({
 	},
 
 	rehydrate: async (refresh = false) => {
-		const access_token = await DeviceStore.getItem("access_token");
+		// const access_token = await DeviceStore.getItem("access_token");
 		const refresh_token = await DeviceStore.getItem("refresh_token");
 		let ok = refresh ? false : _this().isAuthenticate;
-		if (!ok) ok = await authenticateBiometric();
+		if (!ok) ok = refresh_token ? await authenticateBiometric() : true;
 		if (!ok) {
 			set({ isLoggedIn: false, isAuthenticate: false, isRehydrated: true });
 			return;
 		}
-		if (access_token) {
-			const getUserDataRes = await getMeApi(access_token);
-			if (getUserDataRes.data?.id) {
-				set({
-					isLoggedIn: true,
-					isRehydrated: true,
-					isAuthenticate: ok,
-					access_token,
-					refresh_token,
-					userData: getUserDataRes.data,
-				});
-				return;
-			}
-		}
+		// if (access_token) {
+		// 	const getUserDataRes = await getMeApi(access_token);
+		// 	if (getUserDataRes.data?.id) {
+		// 		set({
+		// 			isLoggedIn: true,
+		// 			isRehydrated: true,
+		// 			isAuthenticate: ok,
+		// 			access_token,
+		// 			refresh_token,
+		// 			userData: getUserDataRes.data,
+		// 		});
+		// 		return;
+		// 	}
+		// }
 		if (refresh_token && ok) {
 			const getUserDataRes = await getMeApi(refresh_token);
-			if (getUserDataRes.data?.id) {
+			if (getUserDataRes?.data?.id) {
 				set({
 					isLoggedIn: true,
 					isRehydrated: true,

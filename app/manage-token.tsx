@@ -1,8 +1,12 @@
 import { AppHeader } from "@/components/theme";
 import { useThemeColor } from "@/hooks/useThemeColor";
-import React, { useMemo, useState } from "react";
+import { useWalletStore } from "@/store/wallet";
+import { DeviceStore } from "@/utils";
+import { router } from "expo-router";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   FlatList,
+  Image,
   SafeAreaView,
   StyleSheet,
   Switch,
@@ -19,37 +23,27 @@ type Token = {
   icon?: string; // có thể là URL hoặc local asset
 };
 
-const TOKENS: Token[] = [
-  { id: "btc", symbol: "BTC", name: "Bitcoin" },
-  { id: "eth-aurora", symbol: "ETH", name: "Aurora", chain: "Aurora" },
-  { id: "ae", symbol: "AE", name: "Aeternity" },
-  { id: "bld", symbol: "BLD", name: "Agoric" },
-  { id: "aion", symbol: "AION", name: "Aion" },
-  { id: "akt", symbol: "AKT", name: "Akash" },
-  { id: "algo", symbol: "ALGO", name: "Algorand" },
-  { id: "apt", symbol: "APT", name: "Aptos" },
-  { id: "eth-arbitrum", symbol: "ETH", name: "Arbitrum", chain: "Arbitrum" },
-  { id: "avax", symbol: "AVAX", name: "Avalanche C-Chain", chain: "Avalanche C-Chain" },
-  { id: "axl", symbol: "AXL", name: "Axelar" },
-  { id: "eth-base", symbol: "ETH", name: "Base", chain: "Base" },
-];
-
 export default function ManageTokensScreen() {
   const background = useThemeColor({}, "background");
   const text = useThemeColor({}, "text");
   const icon = useThemeColor({}, "icon");
   const tint = useThemeColor({}, "tint");
 
+  const { tokens } = useWalletStore();
+
   const [query, setQuery] = useState("");
-  const [enabled, setEnabled] = useState<Record<string, boolean>>({
-    btc: true,
-    "eth-aurora": true,
-  });
+  const [enabledTokens, setEnabledTokens] = useState<string[]>([]);
+
+  useEffect(() => {
+    const load = async () =>
+      setEnabledTokens(JSON.parse(await DeviceStore.getItem("enabledTokens") || "[]"));
+    load();
+  }, []);
 
   const data = useMemo(() => {
     const q = query.trim().toLowerCase();
-    if (!q) return TOKENS;
-    return TOKENS.filter(
+    if (!q) return tokens;
+    return tokens.filter(
       (t) =>
         t.symbol.toLowerCase().includes(q) ||
         t.name.toLowerCase().includes(q) ||
@@ -59,7 +53,7 @@ export default function ManageTokensScreen() {
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: background }]}>
-      <AppHeader title="Quản lý tiền mã hóa" />
+      <AppHeader title="Quản lý tiền mã hóa" onBack={() => router.push('/')} />
 
       {/* search */}
       <View style={{ paddingHorizontal: 16, marginVertical: 8 }}>
@@ -79,12 +73,10 @@ export default function ManageTokensScreen() {
         data={data}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => {
-          const active = !!enabled[item.id];
           return (
             <View style={styles.row}>
               <View style={styles.rowLeft}>
-                {/* icon demo: nếu có file icon riêng thì thay bằng <Image /> */}
-                <View style={styles.tokenCircle} />
+                <Image source={{ uri: item.logo }} style={styles.tokenCircle} resizeMode="cover" />
                 <View style={{ marginLeft: 10 }}>
                   <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
                     <Text style={[styles.symbol, { color: text }]}>{item.symbol}</Text>
@@ -99,8 +91,14 @@ export default function ManageTokensScreen() {
               </View>
 
               <Switch
-                value={active}
-                onValueChange={(v) => setEnabled((s) => ({ ...s, [item.id]: v }))}
+                value={enabledTokens.includes(item.symbol + ":" + item.chain)}
+                onValueChange={(value) => {
+                  setEnabledTokens((prev) => {
+                    const newValue = value ? [...prev, item.symbol + ":" + item.chain] : prev.filter((id) => id !== item.symbol + ":" + item.chain)
+                    DeviceStore.setItem("enabledTokens", JSON.stringify(newValue));
+                    return newValue;
+                  });
+                }}
                 trackColor={{ false: "#767577", true: tint }}
                 thumbColor="#fff"
               />

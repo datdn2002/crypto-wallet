@@ -1,9 +1,15 @@
+import { createAddressBookApi } from "@/api/addressBook";
+import { ScanQr } from "@/components/ScanQr";
 import { AppHeader } from "@/components/theme";
 import { useThemeColor } from "@/hooks/useThemeColor";
+import { useAuthStore } from "@/store/auth";
+import { useWalletStore } from "@/store/wallet";
 import { Ionicons } from "@expo/vector-icons";
+import * as Clipboard from "expo-clipboard";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useMemo, useState } from "react";
 import { Pressable, SafeAreaView, StyleSheet, Text, TextInput, View } from "react-native";
+import Toast from "react-native-toast-message";
 
 export default function AddAddressScreen() {
   const router = useRouter();
@@ -13,29 +19,49 @@ export default function AddAddressScreen() {
     symbol?: string;
     assetName?: string;
   }>();
-
+  const { access_token } = useAuthStore();
+  const { refetchAddress } = useWalletStore();
   const bg = useThemeColor({}, "background");
   const text = useThemeColor({}, "text");
   const icon = useThemeColor({}, "icon");
   const tint = useThemeColor({}, "tint");
 
   const [addr, setAddr] = useState("");
+  const [openScan, setOpenScan] = useState(false);
 
   const valid = useMemo(() => addr.trim().length > 0, [addr]); // TODO: validate theo chain
 
   const onPaste = async () => {
-    const { Clipboard } = await import("react-native"); // hoặc expo-clipboard
+    Clipboard.getStringAsync().then(text => {
+      setAddr(text);
+    });
   };
 
-  const onScan = () => {
-    // TODO: mở camera scanner (expo-barcode-scanner)
+  const onScan = (data: string) => {
+    setAddr(data.split(":")[0]);
+    setOpenScan(false);
   };
 
-  const onDone = () => {
-    if (!valid) return;
-    // TODO: submit -> lưu contact {name, assetId, address: addr}
-    router.dismissAll(); // hoặc router.back() nhiều lần tuỳ flow
+  const onDone = async () => {
+    if (!valid || !access_token) return;
+    const createAddressRes = await createAddressBookApi(access_token, {
+      address: addr.trim(),
+      alias: 0,
+      note: name || "",
+    })
+
+    if (createAddressRes.statusCode === 201) {
+      Toast.show({ text1: "Thêm thành công", type: "success" })
+      refetchAddress();
+      router.dismissAll();
+    } else {
+      Toast.show({ text1: "Lỗi", type: "error" })
+    }
   };
+
+  if (openScan) {
+    return <ScanQr onEndScan={onScan} />
+  }
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: bg }]}>
@@ -57,7 +83,7 @@ export default function AddAddressScreen() {
           <Pressable onPress={onPaste} style={styles.inlineBtn}>
             <Text style={[styles.inlineText, { color: tint }]}>Dán</Text>
           </Pressable>
-          <Pressable onPress={onScan} style={[styles.inlineBtn, { marginLeft: 6 }]}>
+          <Pressable onPress={() => setOpenScan(true)} style={[styles.inlineBtn, { marginLeft: 6 }]}>
             <Ionicons name="qr-code-outline" size={18} color={tint} />
           </Pressable>
         </View>
@@ -67,7 +93,7 @@ export default function AddAddressScreen() {
           disabled={!valid}
           style={[styles.primaryBtn, { backgroundColor: valid ? tint : "#A6A6AA" }]}
         >
-          <Text style={[styles.primaryText, { color: text }]}>Hoàn tất</Text>
+          <Text style={[styles.primaryText]}>Hoàn tất</Text>
         </Pressable>
       </View>
     </SafeAreaView>

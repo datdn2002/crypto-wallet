@@ -3,7 +3,7 @@ import { useThemeColor } from "@/hooks/useThemeColor";
 import { useAuthStore } from "@/store/auth";
 import { authenticateBiometric } from "@/store/biometric-auth";
 import { useWalletStore } from "@/store/wallet";
-import { createNewWallet, createWalletFromMnemonic, deleteWalletById, getWalletMnemonic } from "@/utils";
+import { createNewWallet, createWalletFromMnemonic, deleteWalletById, getWalletMnemonic, sleep } from "@/utils";
 import { Ionicons } from "@expo/vector-icons";
 import React, { useEffect, useState } from "react";
 import { ActivityIndicator, FlatList, Pressable, StyleSheet, Text, TouchableOpacity, View } from "react-native";
@@ -43,20 +43,32 @@ export function Wallets({ visible, onClose }: Props) {
 	const tint = useThemeColor({}, "tint");
 	useEffect(() => {
 		const fetchData = async () => {
-			if (!visible) return;
 			setLoading(true);
 			await refreshWallet();
 			setLoading(false);
 		};
 		fetchData();
-	}, [refetch, visible]);
+	}, [refetch]);
 
 	const handleAddWallet = async () => {
+		Toast.show({
+			type: "info",
+			text1: "Đang tạo ví mới...",
+			text2: "Vui lòng chờ trong giây lát",
+			visibilityTime: 2000,
+		});
+		setShowCreateWalletModal(false);
 		if (!access_token || !userData) return;
-		const newWallet = await createNewWallet(userData.id, access_token, "Ví " + (walletCount + 1));
+		await sleep(100);
+		const newWallet = await createNewWallet(access_token, "Ví " + (walletCount + 1));
 		if (newWallet) {
 			setRefetch((prev) => prev + 1);
 			setShowCreateWalletModal(false);
+			Toast.show({
+				type: "success",
+				text1: "Thành công 🎉",
+				text2: "Ví mới đã được tạo!",
+			});
 		} else {
 			console.error("Failed to create wallet");
 		}
@@ -68,7 +80,7 @@ export function Wallets({ visible, onClose }: Props) {
 			console.error("Invalid mnemonic or label");
 			return;
 		}
-		const res = await createWalletFromMnemonic(payload.mnemonic, userData.id, access_token, payload.label);
+		const res = await createWalletFromMnemonic(payload.mnemonic, access_token, payload.label);
 		if (res) {
 			Toast.show({
 				type: "success",

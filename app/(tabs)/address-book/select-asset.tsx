@@ -1,21 +1,9 @@
 import { AppHeader } from "@/components/theme";
 import { useThemeColor } from "@/hooks/useThemeColor";
+import { useWalletStore } from "@/store/wallet";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useMemo, useState } from "react";
-import { FlatList, Pressable, SafeAreaView, StyleSheet, Text, TextInput, View } from "react-native";
-
-type Asset = { id: string; symbol: string; name: string; icon?: string };
-
-const ASSETS: Asset[] = [
-  { id: "eth", symbol: "ETH", name: "Ethereum" },
-  { id: "btc", symbol: "BTC", name: "Bitcoin" },
-  { id: "usdt", symbol: "USDT", name: "Tether" },
-  { id: "bsc", symbol: "BNB", name: "BNB Smart Chain" },
-  { id: "sol", symbol: "SOL", name: "Solana" },
-  { id: "apt", symbol: "APT", name: "Aptos" },
-  { id: "avax", symbol: "AVAX", name: "Avalanche" },
-  // … thêm tuỳ ý
-];
+import { FlatList, Image, Pressable, SafeAreaView, StyleSheet, Text, TextInput, View } from "react-native";
 
 export default function SelectAssetScreen() {
   const { name } = useLocalSearchParams<{ name?: string }>();
@@ -25,12 +13,14 @@ export default function SelectAssetScreen() {
   const text = useThemeColor({}, "text");
   const icon = useThemeColor({}, "icon");
 
+  const { tokens } = useWalletStore();
+
   const [q, setQ] = useState("");
 
   const data = useMemo(() => {
     const s = q.trim().toLowerCase();
-    if (!s) return ASSETS;
-    return ASSETS.filter(
+    if (!s) return tokens;
+    return tokens.filter(
       a => a.symbol.toLowerCase().includes(s) || a.name.toLowerCase().includes(s)
     );
   }, [q]);
@@ -67,7 +57,7 @@ export default function SelectAssetScreen() {
             }
           >
             {/* icon demo (nếu có file ảnh riêng thì thay Image uri/source) */}
-            <View style={styles.tokenCircle} />
+            <Image source={{ uri: item.logo }} style={styles.tokenCircle} resizeMode="cover" />
             <View style={{ marginLeft: 10, flex: 1 }}>
               <Text style={[styles.assetSym, { color: text }]}>{item.symbol}</Text>
               <Text style={[styles.assetName, { color: icon }]}>{item.name}</Text>

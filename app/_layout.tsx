@@ -64,12 +64,14 @@ export default function RootLayout() {
 				]}
 			>
 				<ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+					{/* <Pressable onPress={Keyboard.dismiss}> */}
 					<Stack screenOptions={{ headerShown: false }}>
 						<Stack.Screen name="(tabs)" options={{ headerShown: false }} />
 						<Stack.Screen name="(auth)" options={{ headerShown: false }} />
 						<Stack.Screen name="(scan)" options={{ headerShown: false }} />
 						<Stack.Screen name="+not-found" />
 					</Stack>
+					{/* </Pressable> */}
 					<StatusBar style="auto" />
 				</ThemeProvider>
 			</SafeAreaView>

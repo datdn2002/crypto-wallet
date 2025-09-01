@@ -13,9 +13,10 @@ interface AppHeaderProps {
     title?: string;
     rightIcon?: keyof typeof Ionicons.glyphMap;
     onRightIconPress?: () => void;
+    onBack?: () => void;
 }
 
-export function AppHeader({ title, rightIcon, onRightIconPress }: AppHeaderProps) {
+export function AppHeader({ title, rightIcon, onRightIconPress, onBack }: AppHeaderProps) {
     const router = useRouter();
 
     // màu theo theme
@@ -54,10 +55,22 @@ export function AppHeader({ title, rightIcon, onRightIconPress }: AppHeaderProps
 
     const hitSlop = { top: 8, bottom: 8, left: 8, right: 8 };
 
+    const handleBack = () => {
+        if (router.canGoBack()) {
+            router.back();
+        } else {
+            if (onBack) {
+                onBack();
+            } else {
+                router.replace("/");
+            }
+        }
+    }
+
     return (
         <View style={styles.container}>
             <Pressable
-                onPress={router.back}
+                onPress={handleBack}
                 style={styles.iconWrapper}
                 hitSlop={hitSlop}
                 android_ripple={{ color: border, radius: 22 }}
