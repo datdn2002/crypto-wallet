@@ -209,7 +209,7 @@ export function Wallets({ visible, onClose }: Props) {
 				visible={importOpen}
 				onClose={() => setImportOpen(false)}
 				onSubmit={handleImportWallet}
-				title="Nhập Bitcoin"
+				title="Nhập từ ví hiện có"
 			/>
 			<ManualBackupModal
 				visible={backupOpen}

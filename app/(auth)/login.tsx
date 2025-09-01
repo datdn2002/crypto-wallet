@@ -88,14 +88,14 @@ export default function LoginScreen() {
 			</TouchableOpacity>
 
 			<View style={styles.row}>
-				<Pressable onPress={() => router.replace("/(auth)/fotgot-password")}>
+				<Pressable onPress={() => router.push("/(auth)/fotgot-password")}>
 					<Text>Quên mật khẩu</Text>
 				</Pressable>
 			</View>
 
 			<View style={styles.row}>
 				<Text style={styles.text}>Bạn chưa có tài khoản? </Text>
-				<Pressable onPress={() => router.replace("/(auth)/(registration-steps)/register")}>
+				<Pressable onPress={() => router.push("/(auth)/(registration-steps)/register")}>
 					<Text style={styles.link}>Đăng ký</Text>
 				</Pressable>
 			</View>

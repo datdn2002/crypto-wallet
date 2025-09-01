@@ -94,3 +94,19 @@ export interface SwapTxQueryParams {
 	userAddress: string;
 	slippage: number;
 }
+
+export interface SendOtpPayload {
+	type: "email" | "phone";
+	purpose: "verification" | "password_reset" | "login" | "transaction";
+	email?: string;
+	phoneNumber?: string;
+}
+
+export interface VerifyOtpPayload {
+	type: "email" | "phone";
+	purpose: "verification" | "password_reset" | "login" | "transaction";
+	email?: string;
+	phoneNumber?: string;
+	code: string;
+}
+

@@ -56,11 +56,11 @@ export function AppHeader({ title, rightIcon, onRightIconPress, onBack }: AppHea
     const hitSlop = { top: 8, bottom: 8, left: 8, right: 8 };
 
     const handleBack = () => {
-        if (router.canGoBack()) {
-            router.back();
+        if (onBack) {
+            onBack();
         } else {
-            if (onBack) {
-                onBack();
+            if (router.canGoBack()) {
+                router.back();
             } else {
                 router.replace("/");
             }

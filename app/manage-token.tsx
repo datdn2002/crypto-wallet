@@ -71,7 +71,7 @@ export default function ManageTokensScreen() {
 
       <FlatList
         data={data}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item, index) => "manage_token-" + index}
         renderItem={({ item }) => {
           return (
             <View style={styles.row}>

@@ -1,5 +1,5 @@
 import axiosClient from "./axiosClient";
-import { CreateUserPayload, LoginPayload } from "./interface";
+import { CreateUserPayload, LoginPayload, SendOtpPayload, VerifyOtpPayload } from "./interface";
 
 export async function createUser(data: CreateUserPayload) {
 	return await axiosClient("user", {
@@ -22,9 +22,23 @@ export async function getMeApi(token: string) {
 	});
 }
 
-export async function sendOtp(email: string, userId: string) {
+export async function sendOtp(data: SendOtpPayload) {
 	return await axiosClient("otp/send", {
 		method: "POST",
-		data: JSON.stringify({ email, type: "email", purpose: "verification", userId }),
+		data: JSON.stringify(data),
+	});
+}
+
+export async function verifyOtp(data: VerifyOtpPayload) {
+	return await axiosClient("otp/verify", {
+		method: "POST",
+		data: JSON.stringify(data),
+	});
+}
+
+export async function forgotPasswordApi(email: string) {
+	return await axiosClient("user/forgot-password", {
+		method: "POST",
+		data: JSON.stringify({ email }),
 	});
 }

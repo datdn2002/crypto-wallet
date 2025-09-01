@@ -1,16 +1,16 @@
 // app/otp.tsx  (đổi path/route theo expo-router của bạn)
+import { verifyOtp } from "@/api";
 import { AppHeader } from "@/components/theme";
-import { useAuthStore } from "@/store/auth";
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { KeyboardAvoidingView, Platform, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 
 export default function OTPScreen() {
+	const { purpose, email } = useLocalSearchParams<{ purpose?: string, email: string }>();
 	const [otp, setOtp] = useState("");
 	const [seconds, setSeconds] = useState(120);
 	const [isError, setError] = useState(false);
 	const inputRef = useRef<TextInput>(null);
-	const { registrationData } = useAuthStore();
 
 	// đếm ngược 120s
 	useEffect(() => {
@@ -39,11 +39,18 @@ export default function OTPScreen() {
 		setSeconds(120);
 	};
 
-	const handleSubmit = () => {
-		if (!isComplete) return;
+	const handleSubmit = async () => {
+		if (!isComplete || !email) return;
 		// TODO: verify OTP (otp)
-		if (otp === "000000") {
-			router.push("/(auth)/(registration-steps)/create-password");
+		const res = await verifyOtp({
+			email: email,
+			code: otp,
+			type: 'email',
+			purpose: (purpose as any) ?? "verification",
+		})
+
+		if (res.statusCode === 200) {
+			router.push({ pathname: "/(auth)/(registration-steps)/create-password", params: { email } });
 		} else {
 			setError(true);
 		}
@@ -65,7 +72,7 @@ export default function OTPScreen() {
 
 				<Text style={styles.title}>Xác thực OTP</Text>
 				<Text style={styles.subtitle}>
-					Vui lòng nhập mã số chúng tôi đã gửi cho bạn qua email {registrationData?.email}. Mã xác thực có giá trị trong{" "}
+					Vui lòng nhập mã số chúng tôi đã gửi cho bạn qua email {email}. Mã xác thực có giá trị trong{" "}
 					{seconds > 0 ? seconds : 0}s.
 				</Text>
 

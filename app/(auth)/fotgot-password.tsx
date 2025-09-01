@@ -1,3 +1,4 @@
+import { forgotPasswordApi } from "@/api";
 import { AppHeader } from "@/components/theme";
 import { useRouter } from "expo-router";
 import React, { useMemo, useState } from "react";
@@ -11,6 +12,7 @@ import {
 	TextInput,
 	View,
 } from "react-native";
+import Toast from "react-native-toast-message";
 
 export default function ForgotPasswordScreen() {
 	const router = useRouter();
@@ -18,11 +20,14 @@ export default function ForgotPasswordScreen() {
 
 	const isValidEmail = useMemo(() => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim()), [email]);
 
-	const handleSendOtp = () => {
+	const handleSendOtp = async () => {
 		if (!isValidEmail) return;
-		// TODO: gọi API gửi OTP với email
-		// ví dụ: await api.auth.sendOtp(email.trim())
-		router.push("/otp"); // điều hướng sang màn OTP
+		Toast.show({ text1: "Đang xử lí...", type: "info" })
+		const res = await forgotPasswordApi(email.trim());
+		if (res.statusCode === 200) {
+			Toast.show({ text2: "Chúng tôi đã gửi link đặt lại mật khẩu tới email của bạn", text1: "Vui lòng kiểm tra email", type: "success" })
+		}
+		router.replace({ pathname: "/(auth)/login" });
 	};
 
 	return (

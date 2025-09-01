@@ -24,7 +24,7 @@ export function ImportWalletModal({
   const text = useThemeColor({}, "text");
   const icon = useThemeColor({}, "icon");
   const tint = useThemeColor({}, "tint");
-  const [label, setLabel] = useState("Ví Bitcoin");
+  const [label, setLabel] = useState("");
   const [mnemonic, setMnemonic] = useState("");
   const [loading, setLoading] = useState(false);
   const creatingRef = useRef(false);
@@ -59,8 +59,8 @@ export function ImportWalletModal({
       .trim()
       .split(/\s+/)
       .filter(Boolean);
-    return words.length >= 12 && words.length <= 24;
-  }, [mnemonic]);
+    return words.length >= 12 && words.length <= 24 && label.trim();
+  }, [mnemonic, label]);
 
   return (
     <ThemedModal visible={visible} onClose={onClose}>

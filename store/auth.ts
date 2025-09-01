@@ -1,4 +1,4 @@
-import { createUser, CreateUserPayload, getMeApi, loginApi, LoginPayload, sendOtp } from "@/api";
+import { createUser, CreateUserPayload, getMeApi, loginApi, LoginPayload } from "@/api";
 import { DeviceStore } from "@/utils";
 import { create } from "zustand";
 import { authenticateBiometric } from "./biometric-auth";
@@ -25,7 +25,6 @@ type AuthState = {
 	login: (data: LoginPayload) => Promise<boolean>;
 	logout: () => Promise<void>;
 	rehydrate: (refresh?: boolean) => Promise<void>;
-	verifyEmail: (email: string) => Promise<void>;
 	register: (data: CreateUserPayload) => Promise<boolean>;
 };
 
@@ -94,13 +93,6 @@ export const useAuthStore = create<AuthState>((set, _this) => ({
 		}
 		set({ isLoggedIn: false, isAuthenticate: ok, isRehydrated: true });
 		return;
-	},
-
-	verifyEmail: async (email: string) => {
-		const { userData } = _this();
-		const userId = userData?.id || "";
-		await sendOtp(email, userId);
-		set((pre) => ({ ...pre, registrationData: { email } }));
 	},
 
 	register: async (data: CreateUserPayload) => {

@@ -1,7 +1,7 @@
 // app/create-password.tsx  (đổi path theo dự án của bạn)
 import { AppHeader } from "@/components/theme";
 import { useAuthStore } from "@/store/auth";
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import React, { useMemo, useState } from "react";
 import {
 	KeyboardAvoidingView,
@@ -15,9 +15,10 @@ import {
 } from "react-native";
 
 export default function CreatePasswordScreen() {
+	const { purpose, email } = useLocalSearchParams<{ purpose?: string, email: string }>();
 	const [password, setPassword] = useState("");
 	const [repassword, setRepassword] = useState("");
-	const { registrationData, register } = useAuthStore();
+	const { register } = useAuthStore();
 
 	const valid = useMemo(() => {
 		const hasLen = password.length >= 8;
@@ -33,9 +34,9 @@ export default function CreatePasswordScreen() {
 	const handleSubmit = async () => {
 		if (!canSubmit) return;
 		const success = await register({
-			email: registrationData?.email ?? "",
+			email: email,
 			password: password,
-			user_name: registrationData?.email,
+			user_name: email,
 			phone_number: "0986172791",
 		});
 		if (success) {
@@ -61,7 +62,7 @@ export default function CreatePasswordScreen() {
 							placeholder="Mật khẩu"
 							secureTextEntry
 							style={styles.input}
-							placeholderTextColor="#e6f0ff"
+							placeholderTextColor="#ccc"
 						/>
 					</View>
 
@@ -74,7 +75,7 @@ export default function CreatePasswordScreen() {
 							placeholder="Nhập lại mật khẩu"
 							secureTextEntry
 							style={styles.input}
-							placeholderTextColor="#e6f0ff"
+							placeholderTextColor="#ccc"
 						/>
 					</View>
 
@@ -138,7 +139,7 @@ const styles = StyleSheet.create({
 		marginTop: 18,
 		height: 48,
 		borderRadius: 8,
-		backgroundColor: BLUE,
+		backgroundColor: "#a3bff633",
 		flexDirection: "row",
 		alignItems: "center",
 		paddingHorizontal: 12,
@@ -150,9 +151,10 @@ const styles = StyleSheet.create({
 	},
 	input: {
 		flex: 1,
-		color: "#fff",
+		color: "#333",
 		fontSize: 15,
 		fontWeight: "600",
+		height: "100%",
 	},
 	noteWrap: {
 		marginTop: 18,

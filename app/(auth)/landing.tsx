@@ -5,7 +5,7 @@ import { SafeAreaView, StatusBar, StyleSheet, Text, TouchableOpacity, View } fro
 
 export default function AuthLandingScreen() {
 
-    const goRegister = () => router.push('/(auth)/register')
+    const goRegister = () => router.push('/(auth)/(registration-steps)/register')
 
     const goLogin = () => router.push('/(auth)/login')
 

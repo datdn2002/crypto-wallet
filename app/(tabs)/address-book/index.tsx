@@ -23,7 +23,6 @@ export default function AddressBookScreen() {
   const tint = useThemeColor({}, "tint");
 
   const goAdd = () => router.push("/(tabs)/address-book/add");
-  console.log(addressBooks)
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: bg }]}>

@@ -1,3 +1,4 @@
+import { sendOtp } from "@/api";
 import { useAuthStore } from "@/store/auth";
 import { FontAwesome } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
@@ -13,9 +14,10 @@ import {
 	TouchableOpacity,
 	View,
 } from "react-native";
+import Toast from "react-native-toast-message";
 
 const RegisterScreen = () => {
-	const { verifyEmail, registrationData } = useAuthStore();
+	const { registrationData } = useAuthStore();
 	const [email, setEmail] = useState("");
 	const [error, setError] = useState(registrationData?.error);
 	const router = useRouter();
@@ -30,8 +32,9 @@ const RegisterScreen = () => {
 			Alert.alert("Please enter your email");
 			return;
 		}
-		await verifyEmail(email);
-		router.push("/(auth)/(registration-steps)/otp");
+		Toast.show({ text1: "Đang xử lí...", type: "info" })
+		await sendOtp({ email, purpose: "verification", type: "email" });
+		router.push({ pathname: "/(auth)/(registration-steps)/otp", params: { email, purpose: "verification" } });
 		Alert.alert("Continue with email:", email);
 	};
 

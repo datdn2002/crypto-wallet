@@ -9,7 +9,7 @@ import React, { useEffect, useState } from "react";
 import { FlatList, Image, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, useColorScheme, View } from "react-native";
 
 const actionItems = [
-	{ icon: "arrow-up", label: "Gửi" },
+	{ icon: "arrow-up", label: "Gửi", onAction: () => router.push("/send") },
 	{ icon: "arrow-down", label: "Nhận", onAction: () => router.push("/receive") },
 	{ icon: "swap-horizontal", label: "Hoán đổi", onAction: () => router.push("/swap") },
 ];
