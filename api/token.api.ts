@@ -1,5 +1,5 @@
 import axiosClient from "./axiosClient";
-import { SwapTokenQueryParams, SwapTxQueryParams, Token, TokenQueryParams } from "./interface";
+import { SendTokenPayload, SwapTokenQueryParams, SwapTxQueryParams, Token, TokenQueryParams } from "./interface";
 
 export async function getTokens({
 	token,
@@ -40,5 +40,13 @@ export async function swapTxApi({
 		method: "GET",
 		token,
 		params,
+	});
+}
+
+export async function sendTokens(token: string, data: SendTokenPayload) {
+	return await axiosClient("transaction/send", {
+		method: "POST",
+		token,
+		data: JSON.stringify(data),
 	});
 }

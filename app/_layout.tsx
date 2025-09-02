@@ -24,7 +24,7 @@ export default function RootLayout() {
 		return (
 			<View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
 				<ActivityIndicator size="large" />
-				<TouchableOpacity
+				{isAuthenticate === false && <TouchableOpacity
 					style={{
 						backgroundColor: "#007AFF",
 						padding: 15,
@@ -34,7 +34,7 @@ export default function RootLayout() {
 					onPress={() => rehydrate()}
 				>
 					<Text style={{ color: "#fff" }}>Xác thực lại</Text>
-				</TouchableOpacity>
+				</TouchableOpacity>}
 			</View>
 		);
 	}

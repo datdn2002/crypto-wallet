@@ -1,7 +1,9 @@
+import { sendTokens } from "@/api";
 import { AddressPicker } from "@/components/AddressPicker";
 import { ScanQr } from "@/components/ScanQr";
 import { AppHeader, ThemedModal } from "@/components/theme";
 import { useThemeColor } from "@/hooks/useThemeColor";
+import { useAuthStore } from "@/store/auth";
 import { Token, useWalletStore } from "@/store/wallet";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import * as Clipboard from "expo-clipboard";
@@ -20,6 +22,8 @@ import {
 } from "react-native";
 
 export default function SendScreen() {
+  const { access_token } = useAuthStore();
+  const { defaultWallet } = useWalletStore();
   const background = useThemeColor({}, "background");
   const text = useThemeColor({}, "text");
   const icon = useThemeColor({}, "icon");
@@ -33,9 +37,10 @@ export default function SendScreen() {
   const [showAddressPicker, setShowAddressPicker] = useState(false);
 
   const data = useMemo(() => {
+    const filterTokens = tokens.filter(token => parseFloat(token.balance) > 0)
     const q = query.trim().toLowerCase();
-    if (!q) return tokens;
-    return tokens.filter(
+    if (!q) return filterTokens;
+    return filterTokens.filter(
       (t) =>
         t.symbol.toLowerCase().includes(q) ||
         t.name.toLowerCase().includes(q) ||
@@ -57,6 +62,17 @@ export default function SendScreen() {
       setAddr(text);
     });
   };
+
+  const handleSend = async () => {
+    if (!access_token || !sendToken?.token_address) return;
+    const res = await sendTokens(access_token, {
+      amount: parseInt(amount),
+      chain: sendToken.chain || 'eth',
+      from_address: defaultWallet?.walletAddresses?.find(item => item.chain.name === sendToken.chain)?.address || "",
+      to_address: addr,
+      token_address: sendToken?.token_address,
+    })
+  }
 
   if (openScan) {
     return <ScanQr onEndScan={onScan} />
@@ -85,7 +101,11 @@ export default function SendScreen() {
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => {
           return (
-            <TouchableOpacity style={styles.row} onPress={() => setSendToken(item)}>
+            <TouchableOpacity style={styles.row} onPress={() => {
+              setAddr("")
+              setAmount("")
+              setSendToken(item)
+            }}>
               <View style={styles.rowLeft}>
                 {/* icon demo: nếu có file icon riêng thì thay bằng <Image /> */}
                 <Image source={{ uri: item.logo }} style={styles.tokenCircle} resizeMode="cover" />
@@ -159,7 +179,7 @@ export default function SendScreen() {
             </View>
           </View>
 
-          <TouchableOpacity style={[styles.button, !isValid && { backgroundColor: "#ccc" }]} onPress={() => { }} disabled={!isValid}>
+          <TouchableOpacity style={[styles.button, !isValid && { backgroundColor: "#ccc" }]} onPress={handleSend} disabled={!isValid}>
             <Text style={{ color: "#fff", fontSize: 16 }}>Tiếp tục</Text>
           </TouchableOpacity>
         </View>

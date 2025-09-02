@@ -8,7 +8,7 @@ type AuthState = {
 	access_token: string | null;
 	refresh_token: string | null;
 	isRehydrated: boolean;
-	isAuthenticate: boolean;
+	isAuthenticate: boolean | null;
 	registrationData?: { email?: string; password?: string; error?: string };
 	userData?: {
 		id: string;
@@ -33,7 +33,7 @@ export const useAuthStore = create<AuthState>((set, _this) => ({
 	access_token: null,
 	refresh_token: null,
 	isRehydrated: false,
-	isAuthenticate: false,
+	isAuthenticate: null,
 
 	login: async (data: LoginPayload) => {
 		const res = (await loginApi(data)) as any;

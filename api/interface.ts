@@ -110,3 +110,10 @@ export interface VerifyOtpPayload {
 	code: string;
 }
 
+export interface SendTokenPayload {
+	from_address: string;
+	to_address: string;
+	chain: string;
+	token_address: string;
+	amount: number;
+}
