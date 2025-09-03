@@ -18,28 +18,49 @@ export function ThemedModal({
 	children,
 	heightPercent = 0.667,
 	showCloseButton = false,
-	header
+	header,
 }: AppModalProps) {
 	if (!visible) return null;
+	if (heightPercent === 1) {
+		return (
+			<Modal visible={visible} animationType="slide" transparent>
+				<SafeAreaView>
+					<Pressable style={styles.overlay} onPress={onClose}>
+						<Pressable onPress={() => { }}>
+							<View>
+								{header}
+								<View style={[styles.modalContainer, { height: height * heightPercent }, header ? null : styles.borderTop]}>
+									{showCloseButton && (
+										<Pressable style={styles.closeBtn} onPress={onClose}>
+											<Text style={styles.closeText}>✕</Text>
+										</Pressable>
+									)}
+									{children}
+								</View>
+							</View>
+						</Pressable>
+					</Pressable>
+				</SafeAreaView>
+			</Modal>
+		)
+	}
 	return (
 		<Modal visible={visible} animationType="slide" transparent>
-			<SafeAreaView>
-				<Pressable style={styles.overlay} onPress={onClose}>
-					<Pressable onPress={() => { }}>
-						<View style={[styles.modalContainer, { height: height * heightPercent }]}>
-							{header}
-							<View style={{ padding: 20 }}>
-								{showCloseButton && (
-									<Pressable style={styles.closeBtn} onPress={onClose}>
-										<Text style={styles.closeText}>✕</Text>
-									</Pressable>
-								)}
-								{children}
-							</View>
+			<Pressable style={styles.overlay} onPress={onClose}>
+				<Pressable onPress={() => { }}>
+					<View>
+						{header}
+						<View style={[styles.modalContainer, { height: height * heightPercent }, header ? null : styles.borderTop]}>
+							{showCloseButton && (
+								<Pressable style={styles.closeBtn} onPress={onClose}>
+									<Text style={styles.closeText}>✕</Text>
+								</Pressable>
+							)}
+							{children}
 						</View>
-					</Pressable>
+					</View>
 				</Pressable>
-			</SafeAreaView>
+			</Pressable>
 		</Modal>
 	);
 }
@@ -50,11 +71,14 @@ const styles = StyleSheet.create({
 		justifyContent: "flex-end",
 		backgroundColor: "rgba(0,0,0,0.4)",
 	},
+	borderTop: {
+		borderTopLeftRadius: 16,
+		borderTopRightRadius: 16,
+	},
 	modalContainer: {
 		width: width,
 		backgroundColor: "#fff",
-		borderTopLeftRadius: 16,
-		borderTopRightRadius: 16,
+		padding: 16,
 	},
 	closeBtn: {
 		position: "absolute",
