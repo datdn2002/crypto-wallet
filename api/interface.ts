@@ -116,4 +116,5 @@ export interface SendTokenPayload {
 	chain: string;
 	token_address: string;
 	amount: number;
+	mnemonic: string;
 }
