@@ -1823,9 +1823,9 @@ export const useWalletStore = create<WalletState>((set, _this) => ({
 					wallets: wallets,
 					walletCount: getWalletsRes.data?.count || 0,
 					defaultWallet,
-					chains: getSupprtedChainsRes.statusCode === 200 ? getSupprtedChainsRes.data || [] : [],
+					chains: getSupprtedChainsRes?.statusCode === 200 ? getSupprtedChainsRes.data || [] : [],
 					tokens: tokens.length > 0 ? tokens : defautTokens as any as Token[],
-					addressBooks: getAddressRes.statusCode === 200 ? getAddressRes.data?.rows || [] : [],
+					addressBooks: getAddressRes?.statusCode === 200 ? getAddressRes.data?.rows || [] : [],
 				});
 			}
 		} catch (error) {
@@ -1839,7 +1839,7 @@ export const useWalletStore = create<WalletState>((set, _this) => ({
 
 		try {
 			const getWalletsRes = await getAllWalletsApi(access_token);
-			if (getWalletsRes.statusCode == 200) {
+			if (getWalletsRes?.statusCode == 200) {
 				const walletIdsOnDevice = await _this().getWalletIdsOnDevice();
 				const wallets: Wallet[] = getWalletsRes.data?.rows?.filter((w: Wallet) => walletIdsOnDevice?.includes(w?.id));
 				const defaultWalletId = await DeviceStore.getItem("default_wallet_id");
@@ -1880,7 +1880,7 @@ export const useWalletStore = create<WalletState>((set, _this) => ({
 		if (!access_token) return [];
 		try {
 			const res = await getSupprtedChainsApi(access_token);
-			if (res.statusCode === 200) {
+			if (res?.statusCode === 200) {
 				return res.data || [];
 			}
 		} catch (error) {
@@ -1892,7 +1892,7 @@ export const useWalletStore = create<WalletState>((set, _this) => ({
 		const getAddressRes = await getAddressBooksApi(access_token);
 		set(pre => ({
 			...pre,
-			addressBooks: getAddressRes.statusCode === 200 ? getAddressRes.data?.rows || [] : [],
+			addressBooks: getAddressRes?.statusCode === 200 ? getAddressRes.data?.rows || [] : [],
 		}));
 	}
 }));

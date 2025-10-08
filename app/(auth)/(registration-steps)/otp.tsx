@@ -49,7 +49,7 @@ export default function OTPScreen() {
 			purpose: (purpose as any) ?? "verification",
 		})
 
-		if (res.statusCode === 200) {
+		if (res?.statusCode === 200) {
 			router.push({ pathname: "/(auth)/(registration-steps)/create-password", params: { email } });
 		} else {
 			setError(true);

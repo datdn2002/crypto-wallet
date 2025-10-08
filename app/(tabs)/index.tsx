@@ -6,12 +6,12 @@ import { DeviceStore } from "@/utils";
 import { Ionicons } from "@expo/vector-icons";
 import { Link, router, usePathname } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { FlatList, Image, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, useColorScheme, View } from "react-native";
+import { FlatList, Image, Pressable, StyleSheet, Text, TouchableOpacity, useColorScheme, View } from "react-native";
 
 const actionItems = [
 	{ icon: "arrow-up", label: "Gửi", onAction: () => router.push("/send") },
 	{ icon: "arrow-down", label: "Nhận", onAction: () => router.push("/receive") },
-	{ icon: "swap-horizontal", label: "Hoán đổi", onAction: () => router.push("/swap") },
+	{ icon: "swap-horizontal", label: "Hoán đổi", onAction: () => router.push("/swap-token") },
 ];
 
 const Tabs = [
@@ -35,7 +35,7 @@ export default function HomePage() {
 	}, [pathname]);
 
 	return (
-		<ScrollView style={[styles.container, { backgroundColor: theme.background }]}>
+		<View style={[styles.container, { backgroundColor: theme.background }]}>
 			{/* Modal chọn ví - GIỮ NGUYÊN */}
 			<Wallets visible={isOpenModalWallet} onClose={() => setIsOpenModalWallet(false)} />
 
@@ -95,7 +95,7 @@ export default function HomePage() {
 						<Text style={[styles.tabTextActive, { color: tab === tabItem.id ? theme.text : theme.icon }]}>
 							{tabItem.label}
 						</Text>
-						{tab === tabItem.id && <View style={[styles.tabIndicator, { backgroundColor: theme.text }]} />}
+						{tab === tabItem.id && <View style={[styles.tabIndicator, { backgroundColor: "#fff" }]} />}
 					</Pressable>
 				))}
 				<View style={{ flex: 1 }} />
@@ -140,7 +140,7 @@ export default function HomePage() {
 					<Text style={styles.manageLink}>Quản lý tiền mã hóa</Text>
 				</TouchableOpacity>
 			</View>
-		</ScrollView>
+		</View>
 	);
 }
 
@@ -250,7 +250,7 @@ const styles = StyleSheet.create({
 	tabsWrap: {
 		flexDirection: "row",
 		alignItems: "flex-end",
-		paddingHorizontal: 16,
+		paddingHorizontal: 4,
 		marginTop: 10,
 		marginBottom: 6,
 		gap: 16,
@@ -260,7 +260,6 @@ const styles = StyleSheet.create({
 	tabIndicator: {
 		width: 36,
 		height: 2,
-		backgroundColor: "#111",
 		borderRadius: 2,
 		marginTop: 6,
 		alignSelf: "center",

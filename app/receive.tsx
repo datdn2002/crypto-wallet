@@ -57,7 +57,7 @@ export default function ReceiveScreen() {
 
       <FlatList
         data={data}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item, index) => "receive_" + item.id + index}
         renderItem={({ item }) => {
           return (
             <View style={styles.row}>
@@ -76,7 +76,6 @@ export default function ReceiveScreen() {
                   <Text style={[styles.name, { color: icon }]}>{item.name}</Text>
                 </View>
               </View>
-
 
               <View style={{ flexDirection: "row", gap: 12 }}>
                 <TouchableOpacity

@@ -2,8 +2,9 @@ import { Token } from "@/store/wallet";
 import { Ionicons } from "@expo/vector-icons";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
-export function TokenView({ token, onPress }: { token: Token; onPress?: () => void }) {
+export function TokenView({ token, onPress }: { token?: Token; onPress?: () => void }) {
   const Element = onPress ? TouchableOpacity : View;
+  if (!token) return null;
   return (
     <Element style={styles.rowLeft} onPress={onPress}>
       <Image source={{ uri: token.logo }} style={styles.tokenCircle} resizeMode="cover" />

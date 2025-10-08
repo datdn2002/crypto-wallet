@@ -1,11 +1,13 @@
 import { getTokens, Token } from "@/api";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { useAuthStore } from "@/store/auth";
+import { router } from "expo-router";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
   Image,
+  Pressable,
   StyleSheet,
   Text,
   View
@@ -90,7 +92,7 @@ function TokenCard({ item }: { item: Token }) {
   const isUp = change24 >= 0;
 
   return (
-    <View style={styles.card}>
+    <Pressable style={styles.card} onPress={() => router.push(`/token/${item.id}`)}>
       <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
         <Image source={{ uri: item.logo_url }} style={styles.logo} />
         <View>
@@ -105,7 +107,7 @@ function TokenCard({ item }: { item: Token }) {
           {formatPercent(change24)}
         </Text>
       </View>
-    </View>
+    </Pressable>
   );
 }
 

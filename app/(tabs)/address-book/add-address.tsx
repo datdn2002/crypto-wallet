@@ -50,7 +50,7 @@ export default function AddAddressScreen() {
       note: name || "",
     })
 
-    if (createAddressRes.statusCode === 201) {
+    if (createAddressRes?.statusCode === 201) {
       Toast.show({ text1: "Thêm thành công", type: "success" })
       refetchAddress();
       router.dismissAll();

@@ -28,7 +28,7 @@ export async function createNewWallet(
 		}
 		return await createWalletFromMnemonic(mnemonic, access_token, walletName);
 	} catch (error) {
-		console.log("createNewWallet (multi-chain, api v2) error:", error);
+		console.log("createNewWallet error:", error);
 		return false;
 	}
 }
@@ -46,7 +46,6 @@ export async function createWalletFromMnemonic(
 		const payload: CreateWalletApiBody = { walletName, walletAddresses };
 
 		const res = await createWalletApi(access_token, payload);
-		console.log("createWalletFromMnemonic", res);
 		if (res?.data?.id) {
 			saveWalletToStorage(res.data.id, mnemonic);
 			return true;

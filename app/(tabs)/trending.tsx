@@ -3,6 +3,7 @@ import { AppHeader } from "@/components/theme";
 import { TimeframeSelect } from "@/components/TimeframeSelect";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { useAuthStore } from "@/store/auth";
+import { router } from "expo-router";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
 	ActivityIndicator,
@@ -257,28 +258,32 @@ function TokenRow({ item }: { item: Token }) {
 	const volume = md?.volume_24h ?? 0;
 
 	return (
-		<View style={styles.row}>
-			<View style={styles.left}>
-				<View style={styles.logoWrap}>
-					<Image source={{ uri: item.logo_url }} style={styles.logo} resizeMode="cover" />
-					{md?.chain_logo ? (
-						<View style={styles.chainBadge}>
-							<Image source={{ uri: md.chain_logo }} style={styles.chainLogo} resizeMode="contain" />
-						</View>
-					) : null}
+		<Pressable onPress={() => {
+			router.push({ pathname: '/token/[id]', params: { id: 123 } })
+		}}>
+			<View style={styles.row}>
+				<View style={styles.left}>
+					<View style={styles.logoWrap}>
+						<Image source={{ uri: item.logo_url }} style={styles.logo} resizeMode="cover" />
+						{md?.chain_logo ? (
+							<View style={styles.chainBadge}>
+								<Image source={{ uri: md.chain_logo }} style={styles.chainLogo} resizeMode="contain" />
+							</View>
+						) : null}
+					</View>
+
+					<View style={styles.nameCol}>
+						<Text style={styles.symbol}>{item.symbol}</Text>
+						<Text style={styles.subText}>{formatVolume(volume)}</Text>
+					</View>
 				</View>
 
-				<View style={styles.nameCol}>
-					<Text style={styles.symbol}>{item.symbol}</Text>
-					<Text style={styles.subText}>{formatVolume(volume)}</Text>
+				<View style={styles.right}>
+					<Text style={styles.price}>{formatUSD(price)}</Text>
+					<PercentText value={change24} />
 				</View>
 			</View>
-
-			<View style={styles.right}>
-				<Text style={styles.price}>{formatUSD(price)}</Text>
-				<PercentText value={change24} />
-			</View>
-		</View>
+		</Pressable>
 	);
 }
 

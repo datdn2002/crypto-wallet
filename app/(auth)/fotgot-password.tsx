@@ -24,7 +24,7 @@ export default function ForgotPasswordScreen() {
 		if (!isValidEmail) return;
 		Toast.show({ text1: "Đang xử lí...", type: "info" })
 		const res = await forgotPasswordApi(email.trim());
-		if (res.statusCode === 200) {
+		if (res?.statusCode === 200) {
 			Toast.show({ text2: "Chúng tôi đã gửi link đặt lại mật khẩu tới email của bạn", text1: "Vui lòng kiểm tra email", type: "success" })
 		}
 		router.replace({ pathname: "/(auth)/login" });

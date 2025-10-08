@@ -58,6 +58,7 @@ export default function LoginScreen() {
 						}}
 						keyboardType="email-address"
 						autoCapitalize="none"
+						placeholderTextColor={"#999"}
 					/>
 				)}
 			/>
@@ -77,6 +78,7 @@ export default function LoginScreen() {
 							setError("");
 						}}
 						secureTextEntry
+						placeholderTextColor={"#999"}
 					/>
 				)}
 			/>
@@ -129,6 +131,7 @@ const styles = StyleSheet.create({
 		borderRadius: 8,
 		padding: 12,
 		marginBottom: 10,
+
 	},
 	button: {
 		backgroundColor: "#007AFF",

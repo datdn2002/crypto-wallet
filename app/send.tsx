@@ -23,14 +23,13 @@ import {
 
 export default function SendScreen() {
   const { access_token } = useAuthStore();
-  const { defaultWallet } = useWalletStore();
   const background = useThemeColor({}, "background");
   const text = useThemeColor({}, "text");
   const icon = useThemeColor({}, "icon");
   const tint = useThemeColor({}, "tint");
   const [query, setQuery] = useState("");
   const [sendToken, setSendToken] = useState<Token | null>(null);
-  const { tokens } = useWalletStore();
+  const { tokens, defaultWallet } = useWalletStore();
   const [addr, setAddr] = useState("");
   const [amount, setAmount] = useState("");
   const [openScan, setOpenScan] = useState(false);
