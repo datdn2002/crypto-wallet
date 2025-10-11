@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "client",
-    "slug": "client",
+    "name": "EasyAI Wallet",
+    "slug": "easyai-wallet",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "client",
+    "scheme": "easyai-wallet",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
@@ -13,7 +13,8 @@
       "infoPlist": {
         "NSFaceIDUsageDescription": "Dùng Face ID để xác thực khi đăng nhập vào ứng dụng",
         "NSCameraUsageDescription": "Ứng dụng cần dùng camera để quét mã QR."
-      }
+      },
+      "bundleIdentifier": "com.datnt123.client"
     },
     "android": {
       "adaptiveIcon": {
@@ -22,7 +23,9 @@
       },
       "edgeToEdgeEnabled": true,
       "permissions": [
-        "CAMERA"
+        "CAMERA",
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO"
       ]
     },
     "web": {
