@@ -1,10 +1,11 @@
 {
   "expo": {
     "name": "EasyAI Wallet",
-    "slug": "easyai-wallet",
+    "slug": "easy-wallet",
+    "owner": "datnt123",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/favicon/Monogram.svg",
     "scheme": "easyai-wallet",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -26,7 +27,13 @@
         "CAMERA",
         "android.permission.CAMERA",
         "android.permission.RECORD_AUDIO"
-      ]
+      ],
+      "package": "com.datnt123.easyaiwallet",
+      "splash": {
+        "image": "./assets/images/splash-icon.png",
+        "resizeMode": "contain",
+        "backgroundColor": "#ffffff"
+      }
     },
     "web": {
       "bundler": "metro",
@@ -44,11 +51,16 @@
           "backgroundColor": "#ffffff"
         }
       ],
-      "expo-secure-store",
-      "expo-camera"
+      "expo-secure-store"
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "2a65b6b9-ffd7-4c26-958c-9632ae338aeb"
+      }
     }
   }
 }

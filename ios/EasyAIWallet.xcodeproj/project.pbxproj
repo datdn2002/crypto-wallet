@@ -7,12 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0591B68E7EA3E5391D96319E /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 701B1280C824CF2689D55AF0 /* PrivacyInfo.xcprivacy */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
+		2AD6DFF125B13E95A744FD77 /* libPods-EasyAIWallet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8104027242A61B1DAA8C98F2 /* libPods-EasyAIWallet.a */; };
 		3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */; };
-		6CF8FAF68F14260921E47EC9 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB1FED07C5DC32D65EFB265B /* ExpoModulesProvider.swift */; };
-		8964182C99137EFBD117FDDD /* libPods-EasyAIWallet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E42BC2A78EC137C247953FD0 /* libPods-EasyAIWallet.a */; };
 		BB2F792D24A3F905000567C9 /* Expo.plist in Resources */ = {isa = PBXBuildFile; fileRef = BB2F792C24A3F905000567C9 /* Expo.plist */; };
+		BC4067B7247FE2C17D8123CA /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A28CC16D345DE4274E50DC0 /* ExpoModulesProvider.swift */; };
+		F0E9AF303AA2C14A00190417 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = F5B7AEFD06C8AEC3A581A4A0 /* PrivacyInfo.xcprivacy */; };
 		F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F11748412D0307B40044C1D9 /* AppDelegate.swift */; };
 /* End PBXBuildFile section */
 
@@ -20,16 +20,16 @@
 		13B07F961A680F5B00A75B9A /* EasyAIWallet.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EasyAIWallet.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = EasyAIWallet/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = EasyAIWallet/Info.plist; sourceTree = "<group>"; };
-		701B1280C824CF2689D55AF0 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xml; name = PrivacyInfo.xcprivacy; path = EasyAIWallet/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
-		7E807508FE1AF3C86B65C9F6 /* Pods-EasyAIWallet.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EasyAIWallet.debug.xcconfig"; path = "Target Support Files/Pods-EasyAIWallet/Pods-EasyAIWallet.debug.xcconfig"; sourceTree = "<group>"; };
+		3A28CC16D345DE4274E50DC0 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-EasyAIWallet/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
+		8104027242A61B1DAA8C98F2 /* libPods-EasyAIWallet.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-EasyAIWallet.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		8554C36EACD275AA4EEC874F /* Pods-EasyAIWallet.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EasyAIWallet.release.xcconfig"; path = "Target Support Files/Pods-EasyAIWallet/Pods-EasyAIWallet.release.xcconfig"; sourceTree = "<group>"; };
 		AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = SplashScreen.storyboard; path = EasyAIWallet/SplashScreen.storyboard; sourceTree = "<group>"; };
 		BB2F792C24A3F905000567C9 /* Expo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Expo.plist; sourceTree = "<group>"; };
-		CB1FED07C5DC32D65EFB265B /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-EasyAIWallet/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
-		DD079A446E0A11A8A160F28A /* Pods-EasyAIWallet.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EasyAIWallet.release.xcconfig"; path = "Target Support Files/Pods-EasyAIWallet/Pods-EasyAIWallet.release.xcconfig"; sourceTree = "<group>"; };
-		E42BC2A78EC137C247953FD0 /* libPods-EasyAIWallet.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-EasyAIWallet.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		F11748412D0307B40044C1D9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = EasyAIWallet/AppDelegate.swift; sourceTree = "<group>"; };
 		F11748442D0722820044C1D9 /* EasyAIWallet-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "EasyAIWallet-Bridging-Header.h"; path = "EasyAIWallet/EasyAIWallet-Bridging-Header.h"; sourceTree = "<group>"; };
+		F5B7AEFD06C8AEC3A581A4A0 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = EasyAIWallet/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		F98BD795BCD444415F50CCF2 /* Pods-EasyAIWallet.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EasyAIWallet.debug.xcconfig"; path = "Target Support Files/Pods-EasyAIWallet/Pods-EasyAIWallet.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -37,21 +37,13 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8964182C99137EFBD117FDDD /* libPods-EasyAIWallet.a in Frameworks */,
+				2AD6DFF125B13E95A744FD77 /* libPods-EasyAIWallet.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		083AD944043C84DC39FE5AB7 /* ExpoModulesProviders */ = {
-			isa = PBXGroup;
-			children = (
-				2BBFDC56A295FF87567E00B9 /* EasyAIWallet */,
-			);
-			name = ExpoModulesProviders;
-			sourceTree = "<group>";
-		};
 		13B07FAE1A68108700A75B9A /* EasyAIWallet */ = {
 			isa = PBXGroup;
 			children = (
@@ -61,15 +53,7 @@
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */,
-				701B1280C824CF2689D55AF0 /* PrivacyInfo.xcprivacy */,
-			);
-			name = EasyAIWallet;
-			sourceTree = "<group>";
-		};
-		2BBFDC56A295FF87567E00B9 /* EasyAIWallet */ = {
-			isa = PBXGroup;
-			children = (
-				CB1FED07C5DC32D65EFB265B /* ExpoModulesProvider.swift */,
+				F5B7AEFD06C8AEC3A581A4A0 /* PrivacyInfo.xcprivacy */,
 			);
 			name = EasyAIWallet;
 			sourceTree = "<group>";
@@ -78,7 +62,7 @@
 			isa = PBXGroup;
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				E42BC2A78EC137C247953FD0 /* libPods-EasyAIWallet.a */,
+				8104027242A61B1DAA8C98F2 /* libPods-EasyAIWallet.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -97,8 +81,8 @@
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
-				BDAF5FE47BF69BAE6ABC9B6F /* Pods */,
-				083AD944043C84DC39FE5AB7 /* ExpoModulesProviders */,
+				9E92FFC5C17687238446B8D6 /* Pods */,
+				E94DDE3DFF7121F3700C5883 /* ExpoModulesProviders */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -113,6 +97,24 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		8EF8071B66725AB770B35864 /* EasyAIWallet */ = {
+			isa = PBXGroup;
+			children = (
+				3A28CC16D345DE4274E50DC0 /* ExpoModulesProvider.swift */,
+			);
+			name = EasyAIWallet;
+			sourceTree = "<group>";
+		};
+		9E92FFC5C17687238446B8D6 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				F98BD795BCD444415F50CCF2 /* Pods-EasyAIWallet.debug.xcconfig */,
+				8554C36EACD275AA4EEC874F /* Pods-EasyAIWallet.release.xcconfig */,
+			);
+			name = Pods;
+			path = Pods;
+			sourceTree = "<group>";
+		};
 		BB2F792B24A3F905000567C9 /* Supporting */ = {
 			isa = PBXGroup;
 			children = (
@@ -122,13 +124,12 @@
 			path = EasyAIWallet/Supporting;
 			sourceTree = "<group>";
 		};
-		BDAF5FE47BF69BAE6ABC9B6F /* Pods */ = {
+		E94DDE3DFF7121F3700C5883 /* ExpoModulesProviders */ = {
 			isa = PBXGroup;
 			children = (
-				7E807508FE1AF3C86B65C9F6 /* Pods-EasyAIWallet.debug.xcconfig */,
-				DD079A446E0A11A8A160F28A /* Pods-EasyAIWallet.release.xcconfig */,
+				8EF8071B66725AB770B35864 /* EasyAIWallet */,
 			);
-			path = Pods;
+			name = ExpoModulesProviders;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -139,13 +140,13 @@
 			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "EasyAIWallet" */;
 			buildPhases = (
 				08A4A3CD28434E44B6B9DE2E /* [CP] Check Pods Manifest.lock */,
-				1F50608739F78F7D73B69533 /* [Expo] Configure project */,
+				7F29DFD62ED29ADC11463A94 /* [Expo] Configure project */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				800E24972A6A228C8D4807E9 /* [CP] Copy Pods Resources */,
-				41F52E8BE3D113EDB3633AEE /* [CP] Embed Pods Frameworks */,
+				0BDC2D090B49F2945606B329 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -195,7 +196,7 @@
 				BB2F792D24A3F905000567C9 /* Expo.plist in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */,
-				0591B68E7EA3E5391D96319E /* PrivacyInfo.xcprivacy in Resources */,
+				F0E9AF303AA2C14A00190417 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -241,7 +242,29 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		1F50608739F78F7D73B69533 /* [Expo] Configure project */ = {
+		0BDC2D090B49F2945606B329 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-EasyAIWallet/Pods-EasyAIWallet-frameworks.sh",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/React-Core-prebuilt/React.framework/React",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/ReactNativeDependencies/ReactNativeDependencies.framework/ReactNativeDependencies",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/hermes-engine/Pre-built/hermes.framework/hermes",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/React.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ReactNativeDependencies.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/hermes.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-EasyAIWallet/Pods-EasyAIWallet-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		7F29DFD62ED29ADC11463A94 /* [Expo] Configure project */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
@@ -264,28 +287,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "# This script configures Expo modules and generates the modules provider file.\nbash -l -c \"./Pods/Target\\ Support\\ Files/Pods-EasyAIWallet/expo-configure-project.sh\"\n";
-		};
-		41F52E8BE3D113EDB3633AEE /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-EasyAIWallet/Pods-EasyAIWallet-frameworks.sh",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/React-Core-prebuilt/React.framework/React",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/ReactNativeDependencies/ReactNativeDependencies.framework/ReactNativeDependencies",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/hermes-engine/Pre-built/hermes.framework/hermes",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/React.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ReactNativeDependencies.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/hermes.framework",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-EasyAIWallet/Pods-EasyAIWallet-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
 		};
 		800E24972A6A228C8D4807E9 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -327,7 +328,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */,
-				6CF8FAF68F14260921E47EC9 /* ExpoModulesProvider.swift in Sources */,
+				BC4067B7247FE2C17D8123CA /* ExpoModulesProvider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -336,13 +337,12 @@
 /* Begin XCBuildConfiguration section */
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 7E807508FE1AF3C86B65C9F6 /* Pods-EasyAIWallet.debug.xcconfig */;
+			baseConfigurationReference = F98BD795BCD444415F50CCF2 /* Pods-EasyAIWallet.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = EasyAIWallet/EasyAIWallet.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = N89M4KWJ68;
 				ENABLE_BITCODE = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
@@ -362,7 +362,7 @@
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_DEBUG";
 				PRODUCT_BUNDLE_IDENTIFIER = com.datnt123.client;
-				PRODUCT_NAME = EasyAIWallet;
+				PRODUCT_NAME = "EasyAIWallet";
 				SWIFT_OBJC_BRIDGING_HEADER = "EasyAIWallet/EasyAIWallet-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -373,13 +373,12 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = DD079A446E0A11A8A160F28A /* Pods-EasyAIWallet.release.xcconfig */;
+			baseConfigurationReference = 8554C36EACD275AA4EEC874F /* Pods-EasyAIWallet.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = EasyAIWallet/EasyAIWallet.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = N89M4KWJ68;
 				INFOPLIST_FILE = EasyAIWallet/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -394,7 +393,7 @@
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_RELEASE";
 				PRODUCT_BUNDLE_IDENTIFIER = com.datnt123.client;
-				PRODUCT_NAME = EasyAIWallet;
+				PRODUCT_NAME = "EasyAIWallet";
 				SWIFT_OBJC_BRIDGING_HEADER = "EasyAIWallet/EasyAIWallet-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
