@@ -5,10 +5,10 @@
     "owner": "datnt123",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/favicon/Monogram.svg",
+    "icon": "./assets/images/favicon/1x/Monogram.png",
     "scheme": "easyai-wallet",
     "userInterfaceStyle": "automatic",
-    "newArchEnabled": true,
+    "newArchEnabled": false,
     "ios": {
       "supportsTablet": true,
       "infoPlist": {
