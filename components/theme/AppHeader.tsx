@@ -2,98 +2,96 @@ import { useThemeColor } from "@/hooks/useThemeColor";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import React, { useMemo } from "react";
-import {
-    Pressable,
-    StyleSheet,
-    Text,
-    View
-} from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 
 interface AppHeaderProps {
-    title?: string;
-    rightIcon?: keyof typeof Ionicons.glyphMap;
-    onRightIconPress?: () => void;
-    onBack?: () => void;
+	title?: string;
+	rightIcon?: keyof typeof Ionicons.glyphMap;
+	onRightIconPress?: () => void;
+	onBack?: () => void;
+	rightElement?: React.ReactNode;
 }
 
-export function AppHeader({ title, rightIcon, onRightIconPress, onBack }: AppHeaderProps) {
-    const router = useRouter();
+export function AppHeader({ title, rightIcon, onRightIconPress, onBack, rightElement }: AppHeaderProps) {
+	const router = useRouter();
 
-    // màu theo theme
-    const bg = useThemeColor({}, "background");
-    const text = useThemeColor({}, "text");
-    const border = useThemeColor({}, "border");
+	// màu theo theme
+	const bg = useThemeColor({}, "background");
+	const text = useThemeColor({}, "text");
+	const border = useThemeColor({}, "border");
 
-    const styles = useMemo(
-        () =>
-            StyleSheet.create({
-                container: {
-                    height: 56,
-                    flexDirection: "row",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    paddingHorizontal: 12,
-                    borderBottomWidth: StyleSheet.hairlineWidth,
-                    borderBottomColor: border,
-                    backgroundColor: bg,
-                },
-                iconWrapper: {
-                    width: 36,
-                    height: 36,
-                    justifyContent: "center",
-                    alignItems: "center",
-                    borderRadius: 18,
-                },
-                title: {
-                    fontSize: 16,
-                    fontWeight: "600",
-                    color: text,
-                },
-            }),
-        [bg, text, border]
-    );
+	const styles = useMemo(
+		() =>
+			StyleSheet.create({
+				container: {
+					height: 56,
+					flexDirection: "row",
+					alignItems: "center",
+					justifyContent: "space-between",
+					paddingHorizontal: 12,
+					borderBottomWidth: StyleSheet.hairlineWidth,
+					borderBottomColor: border,
+					backgroundColor: bg,
+				},
+				iconWrapper: {
+					width: 36,
+					height: 36,
+					justifyContent: "center",
+					alignItems: "center",
+					borderRadius: 18,
+				},
+				title: {
+					fontSize: 16,
+					fontWeight: "600",
+					color: text,
+				},
+			}),
+		[bg, text, border]
+	);
 
-    const hitSlop = { top: 8, bottom: 8, left: 8, right: 8 };
+	const hitSlop = { top: 8, bottom: 8, left: 8, right: 8 };
 
-    const handleBack = () => {
-        if (onBack) {
-            onBack();
-        } else {
-            if (router.canGoBack()) {
-                router.back();
-            } else {
-                router.replace("/");
-            }
-        }
-    }
+	const handleBack = () => {
+		if (onBack) {
+			onBack();
+		} else {
+			if (router.canGoBack()) {
+				router.back();
+			} else {
+				router.replace("/");
+			}
+		}
+	};
 
-    return (
-        <View style={styles.container}>
-            <Pressable
-                onPress={handleBack}
-                style={styles.iconWrapper}
-                hitSlop={hitSlop}
-                android_ripple={{ color: border, radius: 22 }}
-            >
-                <Ionicons name="arrow-back" size={24} color={text} />
-            </Pressable>
+	return (
+		<View style={styles.container}>
+			<Pressable
+				onPress={handleBack}
+				style={styles.iconWrapper}
+				hitSlop={hitSlop}
+				android_ripple={{ color: border, radius: 22 }}
+			>
+				<Ionicons name="arrow-back" size={24} color={text} />
+			</Pressable>
 
-            <Text numberOfLines={1} style={styles.title}>
-                {title}
-            </Text>
+			<Text numberOfLines={1} style={styles.title}>
+				{title}
+			</Text>
 
-            {rightIcon ? (
-                <Pressable
-                    onPress={onRightIconPress}
-                    style={styles.iconWrapper}
-                    hitSlop={hitSlop}
-                    android_ripple={{ color: border, radius: 22 }}
-                >
-                    <Ionicons name={rightIcon} size={22} color={text} />
-                </Pressable>
-            ) : (
-                <View style={styles.iconWrapper} />
-            )}
-        </View>
-    );
+			{rightIcon ? (
+				<Pressable
+					onPress={onRightIconPress}
+					style={styles.iconWrapper}
+					hitSlop={hitSlop}
+					android_ripple={{ color: border, radius: 22 }}
+				>
+					<Ionicons name={rightIcon} size={22} color={text} />
+				</Pressable>
+			) : rightElement ? (
+				rightElement
+			) : (
+				<View style={styles.iconWrapper} />
+			)}
+		</View>
+	);
 }
